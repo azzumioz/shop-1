@@ -1,0 +1,16 @@
+html {
+    height: 100%;
+}
+
+main {
+    background-color: #cbcbcb;
+    flex-basis: 100%;
+}
+
+.navbar a {
+    color: #93B8FF;
+}
+
+.navbar a.active {
+    color: white;
+}
