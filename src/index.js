@@ -10,7 +10,7 @@ const templateIndex = "/index.ejs";
 const templateProduct = "/product.ejs";
 const ProductService = require("./ProductService.js");
 const statusOk = 200;
-const statusNotFound = 204;
+const statusNotFound = 404;
 const statusError = 500;
 const server = http.createServer(handler);
 ProductService.init();
@@ -20,7 +20,7 @@ server.listen(process.env.PORT || 8080);
 function handler(req, res) {
     const parsedURL = URL.parse(req.url);
     const pathName = parsedURL.pathname;
-    if (pathName === pathRoot) {
+    if (pathName == pathRoot) {
         serveIndex(res);
     } else
     if (pathName.startsWith(pathRoot + staticDirName)) {
