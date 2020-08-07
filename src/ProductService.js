@@ -1,7 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 let shopDatabase;
 let productCollection;
-let products = [];
 
 module.exports = {
     init() {
@@ -13,13 +12,10 @@ module.exports = {
     },
 
     getProducts() {
-        const cursor = productCollection.find();
-        const promise = cursor.toArray();
-        return promise;
+        return productCollection.find().toArray();
     },
 
     getProductByKey(key) {
-        const promise = productCollection.findOne({"key": key});
-        return promise;
+        return productCollection.findOne({"key": key});
     }
 }
