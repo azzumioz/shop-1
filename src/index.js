@@ -14,7 +14,6 @@ const statusNotFound = 404;
 const statusError = 500;
 const server = http.createServer(handler);
 ProductService.init();
-const products = ProductService.getProducts();
 server.listen(process.env.PORT || 8080);
 
 function handler(req, res) {
@@ -61,16 +60,17 @@ function serveStatic (req, res) {
 
 function serveIndex (res) {
     res.setHeader("Content-Type", "text/html; charset=utf-8");
-    try {
-        const content = fs.readFileSync(staticDirName + templateIndex).toString();
-        const template = ejs.compile(content);
-        const scope = {products: products};
-        res.end(template(scope));
-    } catch(err) {
-        console.log( err );
-        res.statusCode = statusError;
-        res.end();
-    }
+    ProductService.getProducts().then(function(products) {
+        try {
+            const content = fs.readFileSync(staticDirName + templateIndex).toString();
+            const template = ejs.compile(content);
+            const scope = {products: products};
+            res.end(template(scope));
+        } catch (err) {
+            res.statusCode = statusError;
+            res.end();
+        }
+    });
 }
 
 function serveProduct (req, res) {
@@ -78,14 +78,15 @@ function serveProduct (req, res) {
     const url = URL.parse(req.url).pathname;
     const slugParts = url.replace(pathProduct, "").split("-");
     const key = slugParts[0];
-    try {
-        const product = ProductService.getProductByKey(Number(key));
-        const content = fs.readFileSync(staticDirName + templateProduct).toString();
-        const template = ejs.compile(content);
-        const scope = {product};
-        res.end(template(scope));
-    } catch (err) {
-        res.statusCode = statusError;
-        res.end();
-    }
+    ProductService.getProductByKey(Number(key)).then(function(product) {
+        try {
+            const content = fs.readFileSync(staticDirName + templateProduct).toString();
+            const template = ejs.compile(content);
+            const scope = {product};
+            res.end(template(scope));
+        } catch (err) {
+            res.statusCode = statusError;
+            res.end();
+        }
+    });
 }
