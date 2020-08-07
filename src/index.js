@@ -8,6 +8,7 @@ const pathProduct = "/product/";
 const staticDirName = "static";
 const templateIndex = "/index.ejs";
 const templateProduct = "/product.ejs";
+const templateNotFound = "/notFound.ejs";
 const ProductService = require("./ProductService.js");
 const statusOk = 200;
 const statusNotFound = 404;
@@ -29,7 +30,8 @@ function handler(req, res) {
         serveProduct (req, res);
     } else {
         res.statusCode = statusNotFound;
-        res.end();
+        serveNotFound(res);
+        //res.end();
     }
 }
 
@@ -53,7 +55,7 @@ function serveStatic (req, res) {
             break;
         default:
             res.statusCode = statusNotFound;
-            res.end();
+            statusNotFound(res);
     }
     content.pipe(res);
 }
@@ -80,6 +82,9 @@ function serveProduct (req, res) {
     const key = slugParts[0];
     ProductService.getProductByKey(Number(key)).then(function(product) {
         try {
+            if (!product) {
+                serveNotFound(res, "Введенный вами товар не найден");
+            }
             const content = fs.readFileSync(staticDirName + templateProduct).toString();
             const template = ejs.compile(content);
             const scope = {product};
@@ -89,4 +94,13 @@ function serveProduct (req, res) {
             res.end();
         }
     });
+}
+
+function serveNotFound (res, customText) {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    const content = fs.readFileSync(staticDirName + templateNotFound).toString();
+    const template = ejs.compile(content);
+    var textNotFound = customText ? customText : "Введенная вами страница на сайте не обнаружена";
+    const scope = {textNotFound};
+    res.end(template(scope));
 }
