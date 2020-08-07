@@ -11,6 +11,7 @@ const templateProduct = "/product.ejs";
 const templateNotFound = "/notFound.ejs";
 const ProductService = require("./ProductService.js");
 const statusOk = 200;
+const statusRedirect = 301;
 const statusNotFound = 404;
 const statusError = 500;
 const server = http.createServer(handler);
@@ -78,12 +79,18 @@ function serveIndex (res) {
 function serveProduct (req, res) {
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     const url = URL.parse(req.url).pathname;
+    const slugPart = url.replace("/product/", "");
     const slugParts = url.replace(pathProduct, "").split("-");
     const key = slugParts[0];
+    const slug = slugPart.slice(key.length + 1);
     ProductService.getProductByKey(Number(key)).then(function(product) {
         try {
             if (!product) {
                 serveNotFound(res, "Введенный вами товар не найден");
+            }
+            if (product.slug !== slug) {
+                res.statusCode = statusRedirect;
+                res.setHeader("Location", `/product/${key}-${product.slug}`);
             }
             const content = fs.readFileSync(staticDirName + templateProduct).toString();
             const template = ejs.compile(content);
