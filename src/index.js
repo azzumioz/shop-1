@@ -5,7 +5,8 @@ const path = require("path");
 const ejs = require("ejs");
 const pathRoot = '/';
 const pathProduct = "/product/";
-const staticDirName = "static";
+// const staticDirName = "static";
+const staticDirName = "public";
 const templateIndex = "/index.ejs";
 const templateProduct = "/product.ejs";
 const templateNotFound = "/notFound.ejs";
@@ -22,7 +23,7 @@ function handler(req, res) {
     const parsedURL = URL.parse(req.url);
     const pathName = parsedURL.pathname;
     if (pathName == pathRoot) {
-        serveIndex(res);
+        serveSPA(res);
     } else
     if (pathName.startsWith(pathRoot + staticDirName)) {
         serveStatic (req, res);
@@ -43,7 +44,7 @@ function serveStatic (req, res) {
     res.statusCode = statusOk;
     switch(extension) {
         case '.html':
-            res.setHeader("Content-Type", "text/html; charset=utf-8");
+            serveSPA(res);
             break;
         case '.css':
             res.setHeader("Content-Type", "text/css");
@@ -53,6 +54,9 @@ function serveStatic (req, res) {
             break;
         case '.jpg':
             res.setHeader("Content-Type", "image/jpg");
+            break;
+        case '.js':
+            res.setHeader("Content-Type", "application/javascript");
             break;
         default:
             res.statusCode = statusNotFound;
@@ -110,4 +114,16 @@ function serveNotFound (res, customText) {
     var textNotFound = customText ? customText : "Введенная вами страница на сайте не обнаружена";
     const scope = {textNotFound};
     res.end(template(scope));
+}
+
+function serveSPA(res) {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    try {
+        const content = fs.readFileSync('public/spa.html').toString();
+        res.statusCode = statusOk;
+        res.end(content);
+    } catch (err) {
+        res.statusCode = statusError;
+        res.end();
+    }
 }

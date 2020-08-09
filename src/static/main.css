@@ -14,3 +14,7 @@ main {
 .navbar a.active {
     color: white;
 }
+
+#root {
+    height: 100vh;
+}
