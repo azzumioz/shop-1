@@ -20,7 +20,7 @@ export default class Navigation extends React.Component {
         return (
             <div className={this.props.clName}>
                 {this.props.tabs.map(function (item, index) {
-                    var isActive = index === activeIndex
+                    var isActive = index === activeIndex;
                     return (
                         <a key={item} className={isActive ? "active nav-link nav-item" : "nav-link nav-item"}
                            onClick={onClick} data-index={index} href="#">{item}</a>
