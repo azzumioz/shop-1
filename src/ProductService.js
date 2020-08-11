@@ -1,4 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID;
 let shopDatabase;
 let productCollection;
 
@@ -17,5 +18,9 @@ module.exports = {
 
     getProductByKey(key) {
         return productCollection.findOne({"key": key});
+    },
+
+    findById(someProductId) {
+        return productCollection.findOne({_id: ObjectID(someProductId)});
     }
-}
+};

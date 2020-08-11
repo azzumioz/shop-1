@@ -18,7 +18,7 @@ module.exports = {
                     to: '',
                     globOptions: {
                         ignore: [
-                            "*.jsx"
+                            "**.jsx"
                         ],
                     },
                 },
