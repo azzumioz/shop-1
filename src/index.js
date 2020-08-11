@@ -136,19 +136,20 @@ function serveAPI(req, res) {
     const url = URL.parse(req.url).pathname;
     const id = url.split("/")[3];
     if (id) {
-        try {
-            ProductService.findById(id).then(function (product) {
-                res.statusCode = statusOk;
-                res.end(JSON.stringify(product));
-            });
-        } catch (e) {
-            res.statusCode = statusNotFound;
-            res.end();
-        }
+        ProductService.findById(id).then(function (product) {
+            res.statusCode = statusOk;
+            res.end(JSON.stringify(product));
+        }).catch(function (err) {
+            res.statusCode = statusError;
+            res.end(err);
+        })
     } else {
         ProductService.getProducts().then(function (products) {
             res.statusCode = statusOk;
             res.end(JSON.stringify(products));
-        });
+        }).catch(function (err) {
+            res.statusCode = statusError;
+            res.end(err);
+        })
     }
 }

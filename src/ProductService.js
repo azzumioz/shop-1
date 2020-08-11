@@ -21,6 +21,12 @@ module.exports = {
     },
 
     findById(someProductId) {
+        let mongoId;
+        try {
+            mongoId = ObjectID(someProductId);
+        } catch (e) {
+            return Promise.reject();
+        }
         return productCollection.findOne({_id: ObjectID(someProductId)});
     }
 };
