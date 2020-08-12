@@ -2,6 +2,14 @@ import React from "react";
 import Navigation from "../component/Navigation.jsx";
 
 export default class IndexPage extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            product: []
+        }
+    }
+
     render() {
         return (
             <div className="d-flex flex-column h-100">
@@ -18,11 +26,11 @@ export default class IndexPage extends React.Component {
                     <div className="row">
                         <div className="content p-4 bg-white col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
                             <ol className="breadcrumb">
-                                <li className="breadcrumb-item"><a href="#">Каталог</a></li>
+                                <li className="breadcrumb-item"><a href="/">Каталог</a></li>
                                 <li className="breadcrumb-item"><a href="#">Вентиляция</a></li>
                                 <li className="breadcrumb-item"><a href="#">ПВУ</a></li>
                             </ol>
-                            <h3>ПВУ Turkov ZENIT 350 HECO</h3>
+                            <h3>{this.state.product.title}</h3>
                             <ul className="nav nav-tabs">
                                 <Navigation tabs={["Описание", "Характеристики", "Отзывы"]} clName="nav nav-tabs"/>
                             </ul>
@@ -32,10 +40,7 @@ export default class IndexPage extends React.Component {
                                          className="img-fluid"/>
                                 </div>
                                 <div className="col-9">
-                                    Вентиляционная установка с рекуперацией тепла и влаги в легком и универсальном
-                                    корпусе из вспененного полипропилена предназначена для поддержания климата в
-                                    жилых
-                                    помещениях или небольших офисах, магазинах.
+                                    {this.state.product.description}
                                     <hr/>
                                     <button type="button" className="btn btn-primary font-weight-bold">Заказать
                                     </button>
@@ -54,5 +59,17 @@ export default class IndexPage extends React.Component {
                 </footer>
             </div>
         );
+    }
+
+    componentDidMount() {
+        const id = this.props.match.params.product;
+        const url = `/api/product/${id}`;
+        fetch(url)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                this.setState({product: json});
+            }.bind(this))
     }
 }

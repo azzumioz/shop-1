@@ -1,7 +1,40 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 export default class IndexPage extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            products: []
+        }
+    }
+
+
+
+    renderProducts() {
+        if (!this.state.products[0]) {
+            return false;
+        }
+        return (
+            this.state.products.map(function (product) {
+                return (
+                    <div className="card" key={product.key}>
+                        <Link to={`/product/${product._id}`}>
+                            <img className="card-img-top" src={`/public/${product.img}`}/>
+                        </Link>
+                        <div className="card-body">
+                            <h5 className="card-title">{product.title}</h5>
+                            <p className="card-text">{product.description}</p>
+                            <p>Цена: <b>{product.price} руб.</b></p>
+                            <a href="#" className="btn btn-primary font-weight-bold">Заказать</a>
+                        </div>
+                    </div>
+                );
+            })
+        )
+    }
+
     render() {
         return (
             <div className="d-flex flex-column h-100">
@@ -21,34 +54,9 @@ export default class IndexPage extends React.Component {
                 <main className=" container-fluid d-flex">
                     <div className="row">
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
-
                             <div className="card-deck pt-3">
-                                <div className="card">
-                                    <Link to="/products/product">
-                                        <img className="card-img-top" src="/public/tovar1.jpg"/>
-                                    </Link>
-                                    <div className="card-body">
-                                        <h5 className="card-title">ПВУ Turkov ZENIT 350 HECO</h5>
-                                        <p className="card-text">Вентиляционная установка с рекуперацией тепла и
-                                            влаги</p>
-                                        <p>Цена: <b>150000 руб.</b></p>
-                                        <a href="#" className="btn btn-primary font-weight-bold">Заказать</a>
-                                    </div>
-                                </div>
-                                <div className="card">
-                                    <Link to="/products/product">
-                                        <img className="card-img-top" src="/public/tovar2.jpg"/>
-                                    </Link>
-                                    <div className="card-body">
-                                        <h5 className="card-title">ПВУ Turkov ZENIT 450 HECO</h5>
-                                        <p className="card-text">Вентиляционная установка с рекуперацией тепла и
-                                            влаги</p>
-                                        <p>Цена: <b>160000 руб.</b></p>
-                                        <a href="#" className="btn btn-primary font-weight-bold">Заказать</a>
-                                    </div>
-                                </div>
+                                {this.state.products && this.renderProducts()}
                             </div>
-
                         </div>
                     </div>
                 </main>
@@ -61,5 +69,16 @@ export default class IndexPage extends React.Component {
                 </footer>
             </div>
         );
+    };
+
+    componentDidMount() {
+        fetch("/api/product")
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                this.setState({products: json});
+            }.bind(this))
     }
+
 }

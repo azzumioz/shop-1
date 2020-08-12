@@ -63,7 +63,7 @@ function serveStatic(req, res) {
             break;
         default:
             res.statusCode = statusNotFound;
-            statusNotFound(res);
+            res.end();
     }
     content.pipe(res);
 }
