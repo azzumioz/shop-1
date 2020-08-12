@@ -145,8 +145,16 @@ function serveAPI(req, res) {
         })
     } else {
         ProductService.getProducts().then(function (products) {
-            res.statusCode = statusOk;
-            res.end(JSON.stringify(products));
+
+            setTimeout(function() {
+                res.setHeader('Content-Type', 'application/json');
+                res.write(JSON.stringify(products));
+                res.statusCode = statusOk;
+                res.end();
+            }, 2000);
+
+            //res.statusCode = statusOk;
+            //res.end(JSON.stringify(products));
         }).catch(function (err) {
             res.statusCode = statusError;
             res.end(err);
