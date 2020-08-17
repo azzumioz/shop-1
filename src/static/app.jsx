@@ -16,10 +16,10 @@ class App extends React.Component {
             <Switch>
                 <Route exact path="/" component={ IndexPage } />
                 <Route exact path="/product/:product" component={ ProductPage } />
+                <Route exact path="/product/" component={ ProductPage } />
             </Switch>
         </Router>;
     }
 }
 
-const instance = <App></App>;
-ReactDOM.render(instance, document.getElementById("root"));
+ReactDOM.render(<App/>, document.getElementById("root"));

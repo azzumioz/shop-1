@@ -1,10 +1,22 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 export default class ProductBox extends React.Component {
     render() {
-        return <div className="product">
-            <h1>{ this.props.title }</h1>
-            { this.props.children }
-        </div>;
+        const product = this.props.product;
+
+        return (
+                <div className="card" key={product.key}>
+                    <Link to={`/product/${product.key}-${product.slug}`}>
+                        <img className="card-img-top" src={`/static/${product.img}`}/>
+                    </Link>
+                    <div className="card-body">
+                        <h5 className="card-title">{product.title}</h5>
+                        <p className="card-text">{product.description}</p>
+                        <p>Цена: <b>{product.price} руб.</b></p>
+                        <a href="#" className="btn btn-primary font-weight-bold">Заказать</a>
+                    </div>
+                </div>
+            )
     }
 }

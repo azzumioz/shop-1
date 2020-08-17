@@ -16,6 +16,13 @@ module.exports = {
         return productCollection.find().toArray();
     },
 
+    getProduct(where) {
+        if (where.key) {
+            where.key = Number(where.key);
+        }
+        return productCollection.findOne(where);
+    },
+
     getProductByKey(key) {
         return productCollection.findOne({"key": key});
     },
