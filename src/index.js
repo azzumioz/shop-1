@@ -9,11 +9,9 @@ const pathProduct = "/product/";
 const pathApi = "/api/product";
 const publicDirName = "public";
 const staticDirName = "static";
-const templateProduct = "/product.ejs";
 const templateNotFound = "/notFound.ejs";
 const ProductService = require("./ProductService.js");
 const statusOk = 200;
-const statusRedirect = 301;
 const statusNotFound = 404;
 const statusError = 500;
 const server = http.createServer(handler);
@@ -25,10 +23,10 @@ function handler(req, res) {
     const pathName = parsedURL.pathname;
     if (pathName == pathRoot) {
         serveSPA(req, res)
-    } else if (pathName.startsWith(pathProduct)) {
-        serveProduct(req, res);
-    } else if (pathName.startsWith(pathRoot + publicDirName) || pathName.startsWith(pathRoot + staticDirName)) {
+    } else if (pathName.startsWith(pathRoot + publicDirName) || pathName.startsWith(pathRoot + staticDirName) || pathName.startsWith('/product/public')) {
         serveStatic(req, res);
+    } else if (pathName.startsWith(pathProduct)) {
+        serveSPA(req, res);
     } else if (pathName.startsWith(pathApi)) {
         serveAPI(req, res);
     } else {
@@ -65,35 +63,9 @@ function serveStatic(req, res) {
     content.pipe(res);
 }
 
-function serveProduct(req, res) {
-    res.setHeader("Content-Type", "text/html; charset=utf-8");
-    const url = URL.parse(req.url).pathname;
-    const slugPart = url.replace("/product/", "");
-    const slugParts = url.replace(pathProduct, "").split("-");
-    const key = slugParts[0];
-    const slug = slugPart.slice(key.length + 1);
-    ProductService.getProductByKey(Number(key)).then(function (product) {
-        try {
-            if (!product) {
-                serveNotFound(res, "Введенный вами товар не найден");
-            }
-            if (product.slug !== slug) {
-                res.statusCode = statusRedirect;
-                res.setHeader("Location", `/product/${key}-${product.slug}`);
-            }
-            const content = fs.readFileSync(publicDirName + templateProduct).toString();
-            const template = ejs.compile(content);
-            const scope = {product};
-            res.end(template(scope));
-        } catch (err) {
-            res.statusCode = statusError;
-            res.end();
-        }
-    });
-}
-
 function serveNotFound(res, customText) {
     res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.statusCode = statusNotFound;
     const content = fs.readFileSync(publicDirName + templateNotFound).toString();
     const template = ejs.compile(content);
     let textNotFound = customText ? customText : "Введенная вами страница на сайте не обнаружена";
@@ -118,14 +90,19 @@ function serveAPI(req, res) {
     const parsedParams = queryString.parse(parsedURL.search);
     if (parsedParams.key || parsedParams.slug) {
         ProductService.getProduct(parsedParams).then(function (product) {
-            setTimeout(function () {
-                res.write(JSON.stringify(product));
-                res.statusCode = statusOk;
+            if (product) {
+                setTimeout(function () {
+                    res.write(JSON.stringify(product));
+                    res.statusCode = statusOk;
+                    res.end();
+                }, 1000);
+            } else {
+                res.statusCode = statusNotFound;
                 res.end();
-            }, 1000);
+            }
         }).catch(function (err) {
             res.statusCode = statusError;
-            res.end(err);
+            res.end();
         });
     } else {
         const url = URL.parse(req.url).pathname;
@@ -151,6 +128,5 @@ function serveAPI(req, res) {
             })
         }
     }
-
 
 }
