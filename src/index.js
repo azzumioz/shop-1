@@ -1,12 +1,13 @@
 const fs = require('fs');
 const ejs = require("ejs");
 const express = require('express');
+const ProductService = require("./ProductService.js");
 const pathRoot = '/';
 const pathProduct = "/product";
 const pathApi = "/api/product";
 const publicDirName = "public";
 const templateNotFound = "/notFound.ejs";
-const ProductService = require("./ProductService.js");
+const mainHtml = "public/spa.html";
 const statusOk = 200;
 const statusNotFound = 404;
 const statusError = 500;
@@ -16,9 +17,7 @@ ProductService.init();
 const app = express();
 const staticMiddleware = express.static(publicDirName);
 
-app.listen(process.env.PORT || 8080, function() {
-    console.log("Server started");
-});
+app.listen(process.env.PORT || 8080, () => console.log("Server started"));
 
 app.get(pathRoot, serveSPA);
 app.get(pathProduct + '/:key_and_slug', serveSPA);
@@ -39,7 +38,7 @@ function serveNotFound(req, res) {
 function serveSPA(req, res) {
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     try {
-        const content = fs.readFileSync('public/spa.html').toString();
+        const content = fs.readFileSync(mainHtml).toString();
         res.statusCode = statusOk;
         res.end(content);
     } catch (err) {
@@ -50,52 +49,51 @@ function serveSPA(req, res) {
 function serveProducts(req, res) {
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     if (req.query.key || req.query.slug) {
-        ProductService.getProduct(req.query).then(function (product) {
-            if (product) {
-                setTimeout(function () {
-                    res.write(JSON.stringify(product));
-                    res.statusCode = statusOk;
-                    res.end();
-                }, 1000);
-            } else {
-                res.statusCode = statusNotFound;
-                res.end();
-            }
-        }).catch(function (err) {
-            res.statusCode = statusError;
-            res.end();
-        });
+        ProductService.getProduct(req.query)
+            .then(product => {
+                getProduct(res, product);
+            })
+            .catch((err) => setStatusError(res, err));
     } else {
-        ProductService.getProducts().then(function (products) {
-            setTimeout(function () {
-                res.write(JSON.stringify(products));
-                res.statusCode = statusOk;
-                res.end();
-            }, 1000);
-        }).catch(function (err) {
-            res.statusCode = statusError;
-            res.end(err);
-        })
+        ProductService.getProducts()
+            .then(products => getData(res, products))
+            .catch(err => setStatusError(res, err));
     }
 }
 
 function serveOneProduct(req, res) {
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     if (req.params.id) {
-        ProductService.findById(req.params.id).then(function (product) {
-            if (product) {
-                setTimeout(function () {
-                    res.write(JSON.stringify(product));
-                    res.statusCode = statusOk;
-                    res.end();
-                }, 1000);
-            } else {
-                res.statusCode = statusNotFound;
-                res.end();
-            }
-        }).catch(function (err) {
-            res.statusCode = statusError;
-            res.end();
-        });
+        ProductService.findById(req.params.id)
+            .then(product => {
+                getProduct(res, product);
+            })
+            .catch(err => setStatusError(res, err));
     }
+}
+
+function getData(res, product) {
+    setTimeout(() => {
+        res.write(JSON.stringify(product));
+        res.statusCode = statusOk;
+        res.end();
+    }, 1000);
+}
+
+function getProduct(res, product) {
+    if (product) {
+        getData(res, product);
+    } else {
+        setStatusNotFound(res);
+    }
+}
+
+function setStatusNotFound(res) {
+    res.statusCode = statusNotFound;
+    res.end();
+}
+
+function setStatusError(res, err) {
+    res.statusCode = statusError;
+    res.end(err);
 }
