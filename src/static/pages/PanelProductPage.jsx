@@ -1,6 +1,5 @@
 import React from "react";
 
-const queryString = require('query-string');
 import Navigation from "../component/Navigation.jsx";
 import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
@@ -11,7 +10,7 @@ const tabsMenu = [
     {name: "Отзывы", link: "#"}
 ];
 
-export default class ProductPage extends React.Component {
+export default class PanelProductPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -56,7 +55,7 @@ export default class ProductPage extends React.Component {
                     <div className="col-9">
                         {this.state.product.description}
                         <hr/>
-                        <button type="button" className="btn btn-primary font-weight-bold">Заказать
+                        <button type="button" className="btn btn-primary font-weight-bold">Редактировать
                         </button>
                     </div>
                 </div>
@@ -67,7 +66,7 @@ export default class ProductPage extends React.Component {
     render() {
         return (
             <div className="d-flex flex-column h-100">
-                <Header/>
+                <Header classColor="row bg-dark"/>
                 {this.renderStatus()}
                 <main className=" container-fluid d-flex">
                     <div className="row">
@@ -83,10 +82,7 @@ export default class ProductPage extends React.Component {
 
     componentDidMount() {
         this.setState({status: 'pending'});
-        const [key, ...slugArray] = this.props.match.params.product.split('-');
-        const slug = slugArray ? slugArray.join('-') : '';
-        const params = queryString.stringify({key, slug});
-        const url = `/api/product?${params}`;
+        const url = `/api/product/${this.props.match.params.id}`;
         fetch(url)
             .then(response => response.json())
             .then(json => this.setState({product: json, status: 'ready'}))

@@ -1,9 +1,9 @@
 import React from "react";
 import Footer from "../component/Footer.jsx";
 import Header from "../component/Header.jsx";
-import ProductBox from "../component/ProductBox.jsx";
+import PanelProductBox from "../component/PanelProductBox.jsx";
 
-export default class IndexPage extends React.Component {
+export default class PanelProductsPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +20,7 @@ export default class IndexPage extends React.Component {
         return (
             this.state.products.map(function (product) {
                 return (
-                    <ProductBox product={product}/>
+                    <PanelProductBox product={product}/>
                 );
             })
         )
@@ -44,7 +44,7 @@ export default class IndexPage extends React.Component {
     render() {
         return (
             <div className="d-flex flex-column h-100">
-                <Header/>
+                <Header classColor="row bg-dark"/>
                 <main className=" container-fluid d-flex">
                     <div className="row">
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
@@ -66,6 +66,6 @@ export default class IndexPage extends React.Component {
             .then(response => response.json())
             .then(json => this.setState({products: json, status: 'ready'}))
             .catch(() => this.setState({status: 'error'}));
-    }
+    };
 
 }

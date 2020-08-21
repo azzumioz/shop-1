@@ -23,6 +23,8 @@ app.get(pathRoot, serveSPA);
 app.get(pathProduct + '/:key_and_slug', serveSPA);
 app.get(pathApi, serveProducts);
 app.get(pathApi + '/:id', serveOneProduct);
+app.get('/panel/product', serveSPA);
+app.get('/panel/product/:id', serveSPA);
 app.use(staticMiddleware);
 app.use(serveNotFound);
 
