@@ -45,7 +45,7 @@ export default class IndexPage extends React.Component {
                 </ul>
                 <div className="row pt-4">
                     <div className="col-3">
-                        <img src={`/static/${this.state.product.img}`}
+                        <img src={`/${this.state.product.img}`}
                              className="img-fluid"/>
                     </div>
                     <div className="col-9">
