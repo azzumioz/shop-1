@@ -18,6 +18,7 @@ class App extends React.Component {
                 <Route exact path="/" component={IndexPage}/>
                 <Route exact path="/product/:product" component={ProductPage}/>
                 <Route exact path="/product/" component={ProductPage}/>
+                <Route exact path="/panel" component={PanelProductsPage}/>
                 <Route exact path="/panel/product" component={PanelProductsPage}/>
                 <Route exact path="/panel/product/:id" component={PanelProductPage}/>
             </Switch>

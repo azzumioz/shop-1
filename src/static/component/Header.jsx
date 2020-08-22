@@ -6,7 +6,7 @@ const tabsMenu = [
     {name: "Доставка", link: "#"},
     {name: "Гарантии", link: "#"},
     {name: "Контакты", link: "#"},
-    {name: "Панель управления", link: "/panel/product"}
+    {name: "Панель управления", link: "/panel"}
 ];
 
 export default class Header extends React.Component {

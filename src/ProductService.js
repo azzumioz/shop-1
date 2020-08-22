@@ -23,10 +23,6 @@ module.exports = {
         return productCollection.findOne(where);
     },
 
-    getProductByKey(key) {
-        return productCollection.findOne({"key": key});
-    },
-
     findById(someProductId) {
         let mongoId;
         try {
