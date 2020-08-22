@@ -35,18 +35,54 @@ export default class PanelProductPage extends React.Component {
             )
     }
 
+    renderForm() {
+        return (
+                <form>
+                    <div className="form-group row">
+                        <label>Наименование</label>
+                        <input
+                            name="title"
+                            value={this.state.product.title}
+                            onChange={this.onChange.bind(this)}
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="form-group row">
+                        <label>Описание</label>
+                        <textarea
+                            name="description"
+                            value={this.state.product.description}
+                            rows="3"
+                            onChange={this.onChange.bind(this)}
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="form-group row">
+                        <label>Ключ</label>
+                        <input
+                            name="key"
+                            value={this.state.product.key}
+                            onChange={this.onChange.bind(this)}
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="form-group row">
+                        <label>Слаг</label>
+                        <input
+                            name="slug"
+                            value={this.state.product.slug}
+                            onChange={this.onChange.bind(this)}
+                            className="form-control"
+                        />
+                    </div>
+                </form>
+        )
+    }
+
     renderProduct() {
         return (
             <React.Fragment>
-                <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="/">Каталог</a></li>
-                    <li className="breadcrumb-item"><a href="#">Вентиляция</a></li>
-                    <li className="breadcrumb-item"><a href="#">ПВУ</a></li>
-                </ol>
                 <h3>{this.state.product.title}</h3>
-                <ul className="nav nav-tabs">
-                    <Navigation tabs={tabsMenu} clName="nav nav-tabs"/>
-                </ul>
                 <div className="row pt-4">
                     <div className="col-3">
                         <img src={`/${this.state.product.img}`}
@@ -54,9 +90,6 @@ export default class PanelProductPage extends React.Component {
                     </div>
                     <div className="col-9">
                         {this.state.product.description}
-                        <hr/>
-                        <button type="button" className="btn btn-primary font-weight-bold">Редактировать
-                        </button>
                     </div>
                 </div>
             </React.Fragment>
@@ -72,12 +105,20 @@ export default class PanelProductPage extends React.Component {
                     <div className="row">
                         <div className="content p-4 bg-white col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
                             {this.state.status === 'ready' && this.renderProduct()}
+                            <hr/>
+                            {this.state.status === 'ready' && this.renderForm()}
                         </div>
                     </div>
                 </main>
                 <Footer/>
             </div>
         );
+    }
+
+    onChange(event) {
+        const name = event.target.name;
+        this.state.product[name] = event.target.value;
+        this.forceUpdate();
     }
 
     componentDidMount() {
