@@ -1,14 +1,7 @@
 import React from "react";
 
-import Navigation from "../component/Navigation.jsx";
 import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
-
-const tabsMenu = [
-    {name: "Описание", link: "#"},
-    {name: "Характеристики", link: "#"},
-    {name: "Отзывы", link: "#"}
-];
 
 export default class PanelProductPage extends React.Component {
 
@@ -37,45 +30,53 @@ export default class PanelProductPage extends React.Component {
 
     renderForm() {
         return (
-                <form>
-                    <div className="form-group row">
-                        <label>Наименование</label>
-                        <input
-                            name="title"
-                            value={this.state.product.title}
-                            onChange={this.onChange.bind(this)}
-                            className="form-control"
-                        />
-                    </div>
-                    <div className="form-group row">
-                        <label>Описание</label>
-                        <textarea
-                            name="description"
-                            value={this.state.product.description}
-                            rows="3"
-                            onChange={this.onChange.bind(this)}
-                            className="form-control"
-                        />
-                    </div>
-                    <div className="form-group row">
-                        <label>Ключ</label>
-                        <input
-                            name="key"
-                            value={this.state.product.key}
-                            onChange={this.onChange.bind(this)}
-                            className="form-control"
-                        />
-                    </div>
-                    <div className="form-group row">
-                        <label>Слаг</label>
-                        <input
-                            name="slug"
-                            value={this.state.product.slug}
-                            onChange={this.onChange.bind(this)}
-                            className="form-control"
-                        />
-                    </div>
-                </form>
+            <form>
+                <div className="form-group row">
+                    <label>Наименование</label>
+                    <input
+                        name="title"
+                        value={this.state.product.title}
+                        onChange={this.onChange.bind(this)}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group row">
+                    <label>Описание</label>
+                    <textarea
+                        name="description"
+                        value={this.state.product.description}
+                        rows="3"
+                        onChange={this.onChange.bind(this)}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group row">
+                    <label>Ключ</label>
+                    <input
+                        name="key"
+                        value={this.state.product.key}
+                        onChange={this.onChange.bind(this)}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group row">
+                    <label>Слаг</label>
+                    <input
+                        name="slug"
+                        value={this.state.product.slug}
+                        onChange={this.onChange.bind(this)}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group row">
+                    <button type="button"
+                            className="btn btn-primary font-weight-bold"
+                            onClick={this.onSave.bind(this)}
+                    >
+                        Сохранить
+                    </button>
+                </div>
+            </form>
         )
     }
 
@@ -119,6 +120,20 @@ export default class PanelProductPage extends React.Component {
         const name = event.target.name;
         this.state.product[name] = event.target.value;
         this.forceUpdate();
+    }
+
+    onSave() {
+        event.preventDefault();
+        fetch(`/api/product/${this.props.match.params.id}`, {
+            method: "PUT",
+            body: JSON.stringify(this.state.product),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(json => this.setState({product: json, status: 'ready'}))
+            .catch(() => this.setState({status: 'error'}));
     }
 
     componentDidMount() {

@@ -2,6 +2,8 @@ const fs = require('fs');
 const ejs = require("ejs");
 const express = require('express');
 const ProductService = require("./ProductService.js");
+const bodyParser = require('body-parser');
+const jsonBodyParser = bodyParser("json");
 const pathRoot = '/';
 const pathProduct = "/product";
 const pathApi = "/api/product";
@@ -28,6 +30,14 @@ app.get(`${pathApi}/:id`, serveOneProduct);
 app.get('/panel', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product/:id', serveSPA);
+app.use(jsonBodyParser);
+app.put("/api/product/:id", function(req, res) {
+    ProductService.updateProduct(req.params.id, req.body)
+        .then(function(result) {
+            res.json(result);
+        });
+});
+
 app.use(staticMiddleware);
 app.use(serveNotFound);
 

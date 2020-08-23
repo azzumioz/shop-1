@@ -31,5 +31,20 @@ module.exports = {
             return Promise.reject();
         }
         return productCollection.findOne({_id: ObjectID(someProductId)});
+    },
+
+    updateProduct(id, patch) {
+        return new Promise(function (resolve, reject) {
+            delete patch._id;
+            productCollection.update(
+                {_id: ObjectID(id)},
+                {
+                    $set: patch
+                }
+            )
+                .then(resolve(productCollection.findOne({_id: ObjectID(id)})))
+                .catch(() => reject('error'));
+        })
     }
+
 };
