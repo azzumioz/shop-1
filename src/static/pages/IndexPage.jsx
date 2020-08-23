@@ -50,7 +50,9 @@ export default class IndexPage extends React.Component {
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
                             {this.renderStatus()}
                             <div className="card-deck pt-3">
-                                {this.state.products && this.renderProducts()}
+                                <div className="card-columns">
+                                    {this.state.products && this.renderProducts()}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -31,6 +31,7 @@ export default class PanelProductPage extends React.Component {
     renderForm() {
         return (
             <form>
+                <h4 className="text-center">Редактирование товара</h4>
                 <div className="form-group row">
                     <label>Наименование</label>
                     <input
@@ -46,6 +47,15 @@ export default class PanelProductPage extends React.Component {
                         name="description"
                         value={this.state.product.description}
                         rows="3"
+                        onChange={this.onChange.bind(this)}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group row">
+                    <label>Цена</label>
+                    <input
+                        name="price"
+                        value={this.state.product.price}
                         onChange={this.onChange.bind(this)}
                         className="form-control"
                     />
@@ -106,7 +116,6 @@ export default class PanelProductPage extends React.Component {
                     <div className="row">
                         <div className="content p-4 bg-white col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
                             {this.state.status === 'ready' && this.renderProduct()}
-                            <hr/>
                             {this.state.status === 'ready' && this.renderForm()}
                         </div>
                     </div>
@@ -117,6 +126,7 @@ export default class PanelProductPage extends React.Component {
     }
 
     onChange(event) {
+        console.log('onChange');
         const name = event.target.name;
         this.state.product[name] = event.target.value;
         this.forceUpdate();

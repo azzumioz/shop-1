@@ -37,7 +37,12 @@ app.put("/api/product/:id", function(req, res) {
             res.json(result);
         });
 });
-
+// app.post("/api/product", function(req, res) {
+//     ProductService.saveProduct(req.body)
+//         .then(function(result) {
+//             res.json(result);
+//         });
+// });
 app.use(staticMiddleware);
 app.use(serveNotFound);
 

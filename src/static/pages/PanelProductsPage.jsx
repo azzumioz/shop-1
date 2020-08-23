@@ -9,7 +9,8 @@ export default class PanelProductsPage extends React.Component {
         super(props);
         this.state = {
             products: [],
-            status: 'idle'
+            status: 'idle',
+            newProduct: []
         }
     }
 
@@ -23,6 +24,72 @@ export default class PanelProductsPage extends React.Component {
                     <PanelProductBox product={product}/>
                 );
             })
+        )
+    }
+
+    renderForm() {
+        return (
+            <div className="card">
+                <article className="card-body">
+                    <form>
+                        <h4 className="card-title text-center">Добавление нового товара</h4>
+                        <div className="form-group">
+                            <label>Наименование</label>
+                            <input
+                                name="title"
+                                value={this.state.newProduct.title}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Описание</label>
+                            <textarea
+                                name="description"
+                                value={this.state.newProduct.description}
+                                rows="3"
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Цена</label>
+                            <input
+                                name="price"
+                                value={this.state.newProduct.price}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Ключ</label>
+                            <input
+                                name="key"
+                                value={this.state.newProduct.key}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Слаг</label>
+                            <input
+                                name="slug"
+                                value={this.state.newProduct.slug}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <button type="button"
+                                    className="btn btn-primary font-weight-bold"
+                                    onClick={this.onSave.bind(this)}
+                            >
+                                Сохранить
+                            </button>
+                        </div>
+                    </form>
+                </article>
+            </div>
         )
     }
 
@@ -49,8 +116,11 @@ export default class PanelProductsPage extends React.Component {
                     <div className="row">
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
                             {this.renderStatus()}
+                            {this.renderForm()}
                             <div className="card-deck pt-3">
-                                {this.state.products && this.renderProducts()}
+                                <div className="card-columns">
+                                    {this.state.products && this.renderProducts()}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -59,6 +129,28 @@ export default class PanelProductsPage extends React.Component {
             </div>
         );
     };
+
+    onChange(event) {
+        const name = event.target.name;
+        this.state.newProduct[name] = event.target.value;
+        this.forceUpdate();
+    }
+
+    onSave() {
+        event.preventDefault();
+        fetch(`/api/product`, {
+            method: "POST",
+            body: JSON.stringify(this.state.newProduct),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(json => this.setState({newProduct: json, status: 'ready'}))
+            .catch(() => this.setState({status: 'error'}));
+        this.state.products.push(this.state.newProduct);
+        this.forceUpdate();
+    }
 
     componentDidMount() {
         this.setState({status: 'pending'});
