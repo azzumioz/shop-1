@@ -31,23 +31,19 @@ app.get('/panel', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product/:id', serveSPA);
 app.use(jsonBodyParser);
-app.put("/api/product/:id", function(req, res) {
+app.put("/api/product/:id", function (req, res) {
     ProductService.updateProduct(req.params.id, req.body)
-        .then(function(result) {
-            res.json(result);
-        });
+        .then(result => res.json(result))
 });
-// app.post("/api/product", function(req, res) {
-//     ProductService.saveProduct(req.body)
-//         .then(function(result) {
-//             res.json(result);
-//         });
-// });
+app.post("/api/product", function (req, res) {
+    ProductService.saveProduct(req.body)
+        .then(result => res.json(result))
+});
 app.use(staticMiddleware);
 app.use(serveNotFound);
 
 function serveNotFound(req, res) {
-    res.setHeader("Content-Type",typeHtml);
+    res.setHeader("Content-Type", typeHtml);
     res.statusCode = statusNotFound;
     const content = fs.readFileSync(publicDirName + templateNotFound).toString();
     const template = ejs.compile(content);

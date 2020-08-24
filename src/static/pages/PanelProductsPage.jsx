@@ -10,7 +10,7 @@ export default class PanelProductsPage extends React.Component {
         this.state = {
             products: [],
             status: 'idle',
-            newProduct: []
+            newProduct : {}
         }
     }
 
@@ -57,6 +57,15 @@ export default class PanelProductsPage extends React.Component {
                             <input
                                 name="price"
                                 value={this.state.newProduct.price}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Имя файла с изображением товара</label>
+                            <input
+                                name="img"
+                                value={this.state.newProduct.img}
                                 onChange={this.onChange.bind(this)}
                                 className="form-control"
                             />
@@ -146,8 +155,7 @@ export default class PanelProductsPage extends React.Component {
             }
         })
             .then(response => response.json())
-            .then(json => this.setState({newProduct: json, status: 'ready'}))
-            .catch(() => this.setState({status: 'error'}));
+            .then(json => this.setState({newProduct: json}));
         this.state.products.push(this.state.newProduct);
         this.forceUpdate();
     }

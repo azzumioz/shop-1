@@ -48,14 +48,9 @@ module.exports = {
     },
 
     saveProduct(product) {
-        return new Promise(function (resolve, reject) {
-            productCollection.insertOne(
-                // {'title':'new', 'description': 'new tovar', 'key': '503', 'slug': 'ventilator-ustanovka', 'price':'500'}
-                {product}
-            )
-                .then(result => {return result.ops[0]})
-                .catch(() => reject('error'));
-        })
+        return productCollection.insertOne(product)
+            .then(result => result.ops[0])
+            .catch(() => 'error');
     }
 
 };
