@@ -3,6 +3,7 @@ const ejs = require("ejs");
 const express = require('express');
 const ProductService = require("./ProductService.js");
 const bodyParser = require('body-parser');
+const cookieParser = require("cookie-parser");
 const jsonBodyParser = bodyParser("json");
 const pathRoot = '/';
 const pathProduct = "/product";
@@ -11,11 +12,14 @@ const publicDirName = "public";
 const templateNotFound = "/notFound.ejs";
 const mainHtml = "public/spa.html";
 const statusOk = 200;
+const statusNotAuth = 401;
 const statusNotFound = 404;
 const statusError = 500;
 const textNotFound = "Введенная вами страница на сайте не обнаружена";
 const typeHtml = "text/html; charset=utf-8";
 const typeJson = "application/json; charset=utf-8";
+const userName = "user";
+const userEmail = "user@mail.ru";
 ProductService.init();
 
 const app = express();
@@ -30,6 +34,16 @@ app.get(`${pathApi}/:id`, serveOneProduct);
 app.get('/panel', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product/:id', serveSPA);
+app.get('/api/login', function (req, res) {
+    res.setHeader("Set-Cookie", `${userName}=${userEmail}; Path=/`);
+    res.end();
+});
+app.get('/api/login2', function (req, res) {
+    res.cookie(userName, userEmail, {path: '/', encode: String});
+    res.end();
+});
+app.use(cookieParser());
+app.get('/api/me', checkCookie);
 app.use(jsonBodyParser);
 app.put("/api/product/:id", function (req, res) {
     ProductService.updateProduct(req.params.id, req.body)
@@ -112,4 +126,15 @@ function setStatusNotFound(res) {
 function setStatusError(res, err) {
     res.statusCode = statusError;
     res.end(err);
+}
+
+function checkCookie(req, res) {
+    res.setHeader("Content-Type", typeHtml);
+    let user = req.cookies[userName];
+    if (user) {
+        res.write(req.cookies[userName]);
+    } else {
+        res.statusCode = statusNotAuth;
+    }
+    res.end();
 }
