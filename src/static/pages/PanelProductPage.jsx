@@ -61,6 +61,15 @@ export default class PanelProductPage extends React.Component {
                     />
                 </div>
                 <div className="form-group row">
+                    <label>Имя файла с изображением товара</label>
+                    <input
+                        name="img"
+                        value={this.state.product.img}
+                        onChange={this.onChange.bind(this)}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group row">
                     <label>Ключ</label>
                     <input
                         name="key"

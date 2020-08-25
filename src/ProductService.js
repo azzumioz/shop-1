@@ -48,6 +48,9 @@ module.exports = {
     },
 
     saveProduct(product) {
+        if (product.key) {
+            product.key = Number(product.key);
+        }
         return productCollection.insertOne(product)
             .then(result => result.ops[0])
             .catch(() => 'error');
