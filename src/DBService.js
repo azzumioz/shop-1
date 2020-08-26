@@ -2,6 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 let shopDatabase;
 let productCollection;
+let userCollection;
 
 module.exports = {
     init() {
@@ -9,6 +10,7 @@ module.exports = {
             .then(function (clientInstance) {
                 shopDatabase = clientInstance.db("shop");
                 productCollection = shopDatabase.collection("product");
+                userCollection = shopDatabase.collection("user");
             })
     },
 
@@ -54,6 +56,11 @@ module.exports = {
         return productCollection.insertOne(product)
             .then(result => result.ops[0])
             .catch(() => 'error');
+    },
+
+    getUserByEmail (userEmail) {
+        let user = userCollection.findOne({"email" : userEmail});
+        return user;
     }
 
 };

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const ejs = require("ejs");
 const express = require('express');
-const ProductService = require("./ProductService.js");
+const DBService = require("./DBService.js");
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const jsonBodyParser = bodyParser("json");
@@ -13,6 +13,7 @@ const templateNotFound = "/notFound.ejs";
 const mainHtml = "public/spa.html";
 const statusOk = 200;
 const statusNotAuth = 401;
+const statusForbidden = 403;
 const statusNotFound = 404;
 const statusError = 500;
 const textNotFound = "Введенная вами страница на сайте не обнаружена";
@@ -20,7 +21,7 @@ const typeHtml = "text/html; charset=utf-8";
 const typeJson = "application/json; charset=utf-8";
 const userName = "user";
 const userEmail = "user@mail.ru";
-ProductService.init();
+DBService.init();
 
 const app = express();
 const staticMiddleware = express.static(publicDirName);
@@ -46,11 +47,11 @@ app.use(cookieParser());
 app.get('/api/me', checkCookie);
 app.use(jsonBodyParser);
 app.put("/api/product/:id", function (req, res) {
-    ProductService.updateProduct(req.params.id, req.body)
+    DBService.updateProduct(req.params.id, req.body)
         .then(result => res.json(result))
 });
 app.post("/api/product", function (req, res) {
-    ProductService.saveProduct(req.body)
+    DBService.saveProduct(req.body)
         .then(result => res.json(result))
 });
 app.use(staticMiddleware);
@@ -79,13 +80,13 @@ function serveSPA(req, res) {
 function serveProducts(req, res) {
     res.setHeader("Content-Type", typeJson);
     if (req.query.key || req.query.slug) {
-        ProductService.getProduct(req.query)
+        DBService.getProduct(req.query)
             .then(product => {
                 getProduct(res, product);
             })
             .catch((err) => setStatusError(res, err));
     } else {
-        ProductService.getProducts()
+        DBService.getProducts()
             .then(products => getData(res, products))
             .catch(err => setStatusError(res, err));
     }
@@ -94,7 +95,7 @@ function serveProducts(req, res) {
 function serveOneProduct(req, res) {
     res.setHeader("Content-Type", typeJson);
     if (req.params.id) {
-        ProductService.findById(req.params.id)
+        DBService.findById(req.params.id)
             .then(product => {
                 getProduct(res, product);
             })
@@ -129,12 +130,23 @@ function setStatusError(res, err) {
 }
 
 function checkCookie(req, res) {
-    res.setHeader("Content-Type", typeHtml);
-    let user = req.cookies[userName];
-    if (user) {
-        res.write(req.cookies[userName]);
+    let email = req.cookies[userName];
+    if (email) {
+        DBService.getUserByEmail(email)
+            .then(result => {
+                if (!result) {
+                    res.statusCode = statusForbidden;
+                    res.end();
+                } else {
+                    res.statusCode = statusOk;
+                    res.end();
+                }
+            })
+            .catch(() => {
+                setStatusError(res, 'Error');
+            });
     } else {
-        res.statusCode = statusNotAuth;
+        res.statusCode = statusForbidden;
+        res.end();
     }
-    res.end();
 }
