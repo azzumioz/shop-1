@@ -4,6 +4,7 @@ const express = require('express');
 const DBService = require("./DBService.js");
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const jsonBodyParser = bodyParser("json");
 const pathRoot = '/';
 const pathProduct = "/product";
@@ -19,8 +20,14 @@ const statusError = 500;
 const textNotFound = "Введенная вами страница на сайте не обнаружена";
 const typeHtml = "text/html; charset=utf-8";
 const typeJson = "application/json; charset=utf-8";
-const userName = "user";
 const userEmail = "user@mail.ru";
+const SECRET = "secret_value";
+const payload = {
+    email: userEmail
+};
+const token = jwt.sign(payload, SECRET, {
+    expiresIn: "5m"
+});
 DBService.init();
 
 const app = express();
@@ -36,11 +43,7 @@ app.get('/panel', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product/:id', serveSPA);
 app.get('/api/login', function (req, res) {
-    res.setHeader("Set-Cookie", `${userName}=${userEmail}; Path=/`);
-    res.end();
-});
-app.get('/api/login2', function (req, res) {
-    res.cookie(userName, userEmail, {path: '/', encode: String});
+    res.cookie('token', token, {path: '/', encode: String});
     res.end();
 });
 app.use(cookieParser());
@@ -130,8 +133,10 @@ function setStatusError(res, err) {
 }
 
 function checkCookie(req, res) {
-    let email = req.cookies[userName];
-    if (email) {
+    try {
+        let token = req.cookies['token'];
+        const payload = jwt.verify(token, SECRET);
+        let email = payload.email;
         DBService.getUserByEmail(email)
             .then(result => {
                 if (!result) {
@@ -145,7 +150,7 @@ function checkCookie(req, res) {
             .catch(() => {
                 setStatusError(res, 'Error');
             });
-    } else {
+    } catch (err) {
         res.statusCode = statusForbidden;
         res.end();
     }
