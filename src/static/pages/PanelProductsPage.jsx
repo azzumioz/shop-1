@@ -10,7 +10,7 @@ export default class PanelProductsPage extends React.Component {
         this.state = {
             products: [],
             status: 'idle',
-            newProduct : {}
+            newProduct: {},
         }
     }
 
@@ -74,9 +74,11 @@ export default class PanelProductsPage extends React.Component {
                             <label>Ключ</label>
                             <input
                                 name="key"
+                                type="number"
                                 value={this.state.newProduct.key}
                                 onChange={this.onChange.bind(this)}
                                 className="form-control"
+                                placeholder="Обязательно к заполнению"
                             />
                         </div>
                         <div className="form-group">
@@ -86,12 +88,16 @@ export default class PanelProductsPage extends React.Component {
                                 value={this.state.newProduct.slug}
                                 onChange={this.onChange.bind(this)}
                                 className="form-control"
+                                placeholder="Обязательно к заполнению"
                             />
                         </div>
                         <div className="form-group">
                             <button type="button"
                                     className="btn btn-primary font-weight-bold"
                                     onClick={this.onSave.bind(this)}
+                                    disabled={
+                                        (this.state.newProduct.key == null || this.state.newProduct.key == '') || (this.state.newProduct.slug == null || this.state.newProduct.slug == '')
+                                    }
                             >
                                 Сохранить
                             </button>
@@ -155,9 +161,21 @@ export default class PanelProductsPage extends React.Component {
             }
         })
             .then(response => response.json())
-            .then(json => this.setState({newProduct: json}));
-        this.state.products.push(this.state.newProduct);
-        this.forceUpdate();
+            .then(json => {
+                this.setState({newProduct: json});
+                this.state.products.push(this.state.newProduct);
+                this.setState({
+                    newProduct: {
+                        title: '',
+                        description: '',
+                        price: '',
+                        img: '',
+                        key: '',
+                        slug: ''
+                    }
+                });
+                this.forceUpdate();
+            });
     }
 
     componentDidMount() {

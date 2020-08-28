@@ -54,7 +54,8 @@ export default class ProductPage extends React.Component {
                              className="img-fluid"/>
                     </div>
                     <div className="col-9">
-                        {this.state.product.description}
+                        <p>{this.state.product.description}</p>
+                        <p>{this.state.product.price} руб.</p>
                         <hr/>
                         <button type="button" className="btn btn-primary font-weight-bold">Заказать
                         </button>
