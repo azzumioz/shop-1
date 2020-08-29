@@ -42,10 +42,7 @@ app.get(`${pathApi}/:id`, serveOneProduct);
 app.get('/panel', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product/:id', serveSPA);
-app.get('/api/login', function (req, res) {
-    res.cookie('token', token, {path: '/', encode: String});
-    res.end();
-});
+app.get('/api/login', getToken);
 app.use(cookieParser());
 app.get('/api/me', checkCookie);
 app.use(jsonBodyParser);
@@ -153,5 +150,29 @@ function checkCookie(req, res) {
     } catch (err) {
         res.statusCode = statusForbidden;
         res.end();
+    }
+}
+
+function getToken(req, res) {
+    if (req.query.email && req.query.password) {
+        let email = req.query.email;
+        let password = req.query.password;
+        DBService.getUserByEmail(email)
+            .then(result => {
+                if (result && result.password == password) {
+                    res.cookie('token', token, {path: '/', encode: String});
+                    res.end();
+                } else {
+                    res.statusCode = statusForbidden;
+                    res.end('Bad user credential');
+                }
+            })
+            .catch(() => {
+                res.statusCode = statusForbidden;
+                res.end('Bad request');
+            });
+    } else {
+        res.statusCode = statusForbidden;
+        res.end('Not set user email or password');
     }
 }
