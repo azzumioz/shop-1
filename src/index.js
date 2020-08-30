@@ -5,6 +5,7 @@ const DBService = require("./DBService.js");
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const jsonBodyParser = bodyParser("json");
 const pathRoot = '/';
 const pathProduct = "/product";
@@ -22,6 +23,7 @@ const typeHtml = "text/html; charset=utf-8";
 const typeJson = "application/json; charset=utf-8";
 const userEmail = "user@mail.ru";
 const SECRET = "secret_value";
+const saltRounds = 10;
 const payload = {
     email: userEmail
 };
@@ -43,6 +45,7 @@ app.get('/panel', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product/:id', serveSPA);
 app.get('/api/login', getToken);
+app.get('/api/bcrypt', getCryptPassword);
 app.use(cookieParser());
 app.get('/api/me', checkCookie);
 app.use(jsonBodyParser);
@@ -154,12 +157,13 @@ function checkCookie(req, res) {
 }
 
 function getToken(req, res) {
+    res.setHeader("Content-Type", typeHtml);
     if (req.query.email && req.query.password) {
         let email = req.query.email;
         let password = req.query.password;
         DBService.getUserByEmail(email)
             .then(result => {
-                if (result && result.password == password) {
+                if (result && bcrypt.compareSync(password, result.password)) {
                     res.cookie('token', token, {path: '/', encode: String});
                     res.end();
                 } else {
@@ -174,5 +178,18 @@ function getToken(req, res) {
     } else {
         res.statusCode = statusForbidden;
         res.end('Not set user email or password');
+    }
+}
+
+function getCryptPassword(req, res) {
+    res.setHeader("Content-Type", typeHtml);
+    if (req.query.password) {
+        let password = req.query.password;
+        let hash = bcrypt.hashSync(password, saltRounds);
+        res.statusCode = statusOk;
+        res.end(hash);
+    } else {
+        res.statusCode = statusError;
+        res.end('Not set password');
     }
 }
