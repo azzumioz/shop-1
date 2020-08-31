@@ -40,19 +40,24 @@ app.listen(process.env.PORT || 8080, () => console.log("Server started"));
 app.get(pathRoot, serveSPA);
 app.get(`${pathProduct}/:key_and_slug`, serveSPA);
 app.get(pathApi, serveProducts);
+app.use(cookieParser());
+app.get(`${pathApi}/:id`, checkToken);
 app.get(`${pathApi}/:id`, serveOneProduct);
 app.get('/panel', serveSPA);
+app.get('/panel/product', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product/:id', serveSPA);
 app.get('/api/login', getToken);
 app.get('/api/bcrypt', getCryptPassword);
-app.use(cookieParser());
-app.get('/api/me', checkCookie);
+app.get('/api/me', checkToken);
+app.get('/api/me', getUserEmail);
 app.use(jsonBodyParser);
+app.put("/api/product/:id", checkToken);
 app.put("/api/product/:id", function (req, res) {
     DBService.updateProduct(req.params.id, req.body)
         .then(result => res.json(result))
 });
+app.post("/api/product", checkToken);
 app.post("/api/product", function (req, res) {
     DBService.saveProduct(req.body)
         .then(result => res.json(result))
@@ -96,6 +101,7 @@ function serveProducts(req, res) {
 }
 
 function serveOneProduct(req, res) {
+
     res.setHeader("Content-Type", typeJson);
     if (req.params.id) {
         DBService.findById(req.params.id)
@@ -132,19 +138,32 @@ function setStatusError(res, err) {
     res.end(err);
 }
 
-function checkCookie(req, res) {
+function getUserEmail(req, res) {
+    let email = req.user.email;
+    if (email) {
+        res.setHeader("Content-Type", typeHtml);
+        res.statusCode = statusOk;
+        res.end('Email: ' + email);
+    } else {
+        res.statusCode = statusForbidden;
+        res.end();
+    }
+}
+
+function checkToken(req, res, next) {
     try {
         let token = req.cookies['token'];
         const payload = jwt.verify(token, SECRET);
         let email = payload.email;
         DBService.getUserByEmail(email)
             .then(result => {
-                if (!result) {
-                    res.statusCode = statusForbidden;
-                    res.end();
-                } else {
+                if (result) {
                     res.statusCode = statusOk;
-                    res.end();
+                    req.user = {'email': email};
+                    next();
+                } else {
+                    res.statusCode = statusForbidden;
+                    res.end('Bad user credential');
                 }
             })
             .catch(() => {
@@ -193,3 +212,5 @@ function getCryptPassword(req, res) {
         res.end('Not set password');
     }
 }
+
+
