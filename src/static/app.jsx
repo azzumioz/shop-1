@@ -6,8 +6,10 @@ import IndexPage from "./pages/IndexPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
 import PanelProductsPage from "./pages/PanelProductsPage.jsx";
 import PanelProductPage from "./pages/PanelProductPage.jsx";
+import PanelLoginPage from "./pages/PanelLoginPage.jsx";
 
 import {createBrowserHistory} from "history";
+
 
 const history = createBrowserHistory();
 
@@ -21,6 +23,7 @@ class App extends React.Component {
                 <Route exact path="/panel" component={PanelProductsPage}/>
                 <Route exact path="/panel/product" component={PanelProductsPage}/>
                 <Route exact path="/panel/product/:id" component={PanelProductPage}/>
+                <Route exact path="/api/login" component={PanelLoginPage}/>
             </Switch>
         </Router>;
     }

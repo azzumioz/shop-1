@@ -41,17 +41,18 @@ app.get(pathRoot, serveSPA);
 app.get(`${pathProduct}/:key_and_slug`, serveSPA);
 app.get(pathApi, serveProducts);
 app.use(cookieParser());
+app.use(jsonBodyParser);
 app.get(`${pathApi}/:id`, checkToken);
 app.get(`${pathApi}/:id`, serveOneProduct);
 app.get('/panel', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product', serveSPA);
 app.get('/panel/product/:id', serveSPA);
-app.get('/api/login', getToken);
+app.get('/api/login', serveSPA);
+app.post('/api/login', getLogin);
 app.get('/api/bcrypt', getCryptPassword);
 app.get('/api/me', checkToken);
 app.get('/api/me', getUserEmail);
-app.use(jsonBodyParser);
 app.put("/api/product/:id", checkToken);
 app.put("/api/product/:id", function (req, res) {
     DBService.updateProduct(req.params.id, req.body)
@@ -175,31 +176,6 @@ function checkToken(req, res, next) {
     }
 }
 
-function getToken(req, res) {
-    res.setHeader("Content-Type", typeHtml);
-    if (req.query.email && req.query.password) {
-        let email = req.query.email;
-        let password = req.query.password;
-        DBService.getUserByEmail(email)
-            .then(result => {
-                if (result && bcrypt.compareSync(password, result.password)) {
-                    res.cookie('token', token, {path: '/', encode: String});
-                    res.end();
-                } else {
-                    res.statusCode = statusForbidden;
-                    res.end('Bad user credential');
-                }
-            })
-            .catch(() => {
-                res.statusCode = statusForbidden;
-                res.end('Bad request');
-            });
-    } else {
-        res.statusCode = statusForbidden;
-        res.end('Not set user email or password');
-    }
-}
-
 function getCryptPassword(req, res) {
     res.setHeader("Content-Type", typeHtml);
     if (req.query.password) {
@@ -210,6 +186,31 @@ function getCryptPassword(req, res) {
     } else {
         res.statusCode = statusError;
         res.end('Not set password');
+    }
+}
+
+function getLogin(req, res) {
+    res.setHeader("Content-Type", typeJson);
+    if (req.body.login && req.body.password) {
+        let email = req.body.login;
+        let password = req.body.password;
+        DBService.getUserByEmail(email)
+            .then(result => {
+                if (result && bcrypt.compareSync(password, result.password)) {
+                    res.cookie('token', token, {path: '/', encode: String});
+                    res.end(JSON.stringify({'status': 'logged'}));
+                } else {
+                    res.statusCode = statusForbidden;
+                    res.end(JSON.stringify({'status': 'error'}));
+                }
+            })
+            .catch(() => {
+                res.statusCode = statusForbidden;
+                res.end(JSON.stringify({'status': 'error'}));
+            });
+    } else {
+        res.statusCode = statusForbidden;
+        res.end(JSON.stringify({'status': 'error'}));
     }
 }
 
