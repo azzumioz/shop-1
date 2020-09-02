@@ -2,6 +2,9 @@ import React from "react";
 import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
 
+const Cookie = require('cookie');
+const jwt = require('jsonwebtoken');
+
 export default class PanelLoginPage extends React.Component {
 
     constructor(props) {
@@ -89,6 +92,17 @@ export default class PanelLoginPage extends React.Component {
         )
     }
 
+    renderLogout() {
+        return (
+            <button type="button"
+                    className="btn btn-primary font-weight-bold"
+                    onClick={this.onLogout.bind(this)}
+            >
+                Выйти
+            </button>
+        )
+    }
+
     render() {
         return (
             <div className="d-flex flex-column h-100">
@@ -98,6 +112,7 @@ export default class PanelLoginPage extends React.Component {
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
                             {this.renderStatus()}
                             {this.state.status !== "logged" && this.renderForm()}
+                            {this.state.status == "logged" && this.renderLogout()}
                         </div>
                     </div>
                 </main>
@@ -125,17 +140,33 @@ export default class PanelLoginPage extends React.Component {
         })
             .then(response => response.json())
             .then(json => {
-                console.log(json.status);
                 if (json.status == 'logged') {
                     this.setState({status: 'logged'});
-
                 }
                 this.setState({status: json.status})
             })
             .catch(() => this.setState({status: 'error'}));
     }
 
-    componentDidMount() {
-
+    onLogout() {
+        document.cookie = 'token=; Path=/; Max-Age=0;';
+        this.state.status = "idle";
+        this.forceUpdate();
+        window.location = "/api/login";
     }
+
+    componentDidMount() {
+        try {
+            let cookies = Cookie.parse(document.cookie);
+            let payload = jwt.decode(cookies.token);
+            let timestampInMilliseconds = new Date().getTime();
+            if (timestampInMilliseconds / 1000 < payload.exp) {
+                this.state.status = "logged";
+                this.forceUpdate();
+            }
+        } catch (e) {
+            this.setState({status: 'idle'});
+        }
+    }
+
 }
