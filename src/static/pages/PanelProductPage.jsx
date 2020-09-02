@@ -2,6 +2,7 @@ import React from "react";
 
 import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
+import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 
 export default class PanelProductPage extends React.Component {
 
@@ -14,18 +15,7 @@ export default class PanelProductPage extends React.Component {
     }
 
     renderStatus() {
-        if (this.state.status == 'pending') {
-            return (
-                <div className="alert-danger" role="alert">
-                    Ожидание
-                </div>
-            )
-        } else
-            return (
-                <div className={this.state.status == 'error' ? 'alert-danger' : 'alert-primary'} role="alert">
-                    {this.state.status == 'error' ? 'Ошибка' : 'Успешно'}
-                </div>
-            )
+        return <PanelInfoProduct status={this.state.status}/>
     }
 
     renderForm() {

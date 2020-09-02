@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
+import PanelInfoLogin from "../component/PanelInfoLogin.jsx";
 
 const Cookie = require('cookie');
 const jwt = require('jsonwebtoken');
@@ -19,35 +20,7 @@ export default class PanelLoginPage extends React.Component {
     }
 
     renderStatus() {
-        switch (this.state.status) {
-            case 'pending':
-                return (
-                    <div className="alert-warning" role="alert">
-                        Проверка авторизации
-                    </div>
-                );
-                break;
-            case 'idle':
-                return (
-                    <div className="alert-primary" role="alert">
-                        Ожидание регистрации
-                    </div>
-                );
-                break;
-            case 'logged':
-                return (
-                    <div className="alert-success" role="alert">
-                        Регистрация выполнена успешна
-                    </div>
-                );
-                break;
-            default:
-                return (
-                    <div className="alert-danger" role="alert">
-                        Ошибка авторизации
-                    </div>
-                );
-        }
+        return <PanelInfoLogin status={this.state.status}/>
     }
 
     renderForm() {
@@ -111,6 +84,7 @@ export default class PanelLoginPage extends React.Component {
                     <div className="row">
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
                             {this.renderStatus()}
+                            {/*<PanelInfo typeAlert={this.state.status}/>*/}
                             {this.state.status !== "logged" && this.renderForm()}
                             {this.state.status == "logged" && this.renderLogout()}
                         </div>

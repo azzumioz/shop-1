@@ -4,6 +4,7 @@ const queryString = require('query-string');
 import Navigation from "../component/Navigation.jsx";
 import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
+import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 
 const tabsMenu = [
     {name: "Описание", link: "#"},
@@ -22,18 +23,7 @@ export default class ProductPage extends React.Component {
     }
 
     renderStatus() {
-        if (this.state.status == 'pending') {
-            return (
-                <div className="alert-danger" role="alert">
-                    Ожидание
-                </div>
-            )
-        } else
-            return (
-                <div className={this.state.status == 'error' ? 'alert-danger' : 'alert-primary'} role="alert">
-                    {this.state.status == 'error' ? 'Ошибка' : 'Успешно'}
-                </div>
-            )
+        return <PanelInfoProduct status={this.state.status}/>
     }
 
     renderProduct() {
