@@ -7,6 +7,7 @@ import ProductPage from "./pages/ProductPage.jsx";
 import PanelProductsPage from "./pages/PanelProductsPage.jsx";
 import PanelProductPage from "./pages/PanelProductPage.jsx";
 import PanelLoginPage from "./pages/PanelLoginPage.jsx";
+import ProtectedRoute from "./component/ProtectedRoute.jsx";
 
 import {createBrowserHistory} from "history";
 
@@ -18,12 +19,12 @@ class App extends React.Component {
         return <Router history={history}>
             <Switch>
                 <Route exact path="/" component={IndexPage}/>
-                <Route exact path="/product/:product" component={ProductPage}/>
-                <Route exact path="/product/" component={ProductPage}/>
-                <Route exact path="/panel" component={PanelProductsPage}/>
-                <Route exact path="/panel/product" component={PanelProductsPage}/>
-                <Route exact path="/panel/product/:id" component={PanelProductPage}/>
-                <Route exact path="/api/login" component={PanelLoginPage}/>
+                <ProtectedRoute exact path="/product/:product" component={ProductPage}/>
+                <ProtectedRoute exact path="/product/" component={ProductPage}/>
+                <ProtectedRoute exact path="/panel" component={PanelProductsPage}/>
+                <ProtectedRoute exact path="/panel/product" component={PanelProductsPage}/>
+                <ProtectedRoute exact path="/panel/product/:id" component={PanelProductPage}/>
+                <Route exact path="/panel/login" component={PanelLoginPage}/>
             </Switch>
         </Router>;
     }

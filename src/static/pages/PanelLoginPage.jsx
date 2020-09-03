@@ -105,7 +105,7 @@ export default class PanelLoginPage extends React.Component {
     onSave() {
         event.preventDefault();
         this.setState({status: 'pending'});
-        fetch(`/api/login`, {
+        fetch(`/panel/login`, {
             method: "POST",
             credentials: "same-origin",
             body: JSON.stringify(this.state.credentials),
@@ -127,7 +127,7 @@ export default class PanelLoginPage extends React.Component {
         document.cookie = 'token=; Path=/; Max-Age=0;';
         this.state.status = "idle";
         this.forceUpdate();
-        window.location = "/api/login";
+        window.location = "/panel/login";
     }
 
     componentDidMount() {
