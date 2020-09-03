@@ -83,8 +83,9 @@ export default class PanelLoginPage extends React.Component {
                 <main className=" container-fluid ">
                     <div className="row">
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
-                            {this.renderStatus()}
-                            {/*<PanelInfo typeAlert={this.state.status}/>*/}
+                            <div className="pb-4">
+                                {this.renderStatus()}
+                            </div>
                             {this.state.status !== "logged" && this.renderForm()}
                             {this.state.status == "logged" && this.renderLogout()}
                         </div>

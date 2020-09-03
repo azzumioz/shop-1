@@ -140,7 +140,13 @@ export default class PanelProductPage extends React.Component {
                 "Content-Type": "application/json"
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.status == '401' || response.status == '403') {
+                    window.location = "/api/login";
+                } else {
+                    return response.json()
+                }
+            })
             .then(json => this.setState({product: json, status: 'ready'}))
             .catch(() => this.setState({status: 'error'}));
     }
@@ -149,7 +155,13 @@ export default class PanelProductPage extends React.Component {
         this.setState({status: 'pending'});
         const url = `/api/product/${this.props.match.params.id}`;
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (response.status == '401' || response.status == '403') {
+                    window.location = "/api/login";
+                } else {
+                    return response.json()
+                }
+            })
             .then(json => this.setState({product: json, status: 'ready'}))
             .catch(() => this.setState({status: 'error'}));
     }

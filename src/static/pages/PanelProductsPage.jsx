@@ -120,7 +120,9 @@ export default class PanelProductsPage extends React.Component {
                 <main className=" container-fluid d-flex">
                     <div className="row">
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
-                            {this.renderStatus()}
+                            <div className="pb-4">
+                                {this.renderStatus()}
+                            </div>
                             {this.renderForm()}
                             <div className="card-deck pt-3">
                                 <div className="card-columns">
@@ -150,7 +152,13 @@ export default class PanelProductsPage extends React.Component {
                 "Content-Type": "application/json"
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.status == '401' || response.status == '403') {
+                    window.location = "/api/login";
+                } else {
+                    return response.json()
+                }
+            })
             .then(json => {
                 this.setState({newProduct: json});
                 this.state.products.push(this.state.newProduct);
