@@ -58,9 +58,19 @@ module.exports = {
             .catch(() => 'error');
     },
 
-    getUserByEmail (userEmail) {
-        let user = userCollection.findOne({"email" : userEmail});
+    getUserByEmail(userEmail) {
+        let user = userCollection.findOne({"email": userEmail});
         return user;
+    },
+
+    deleteProduct(someProductId) {
+        let mongoId;
+        try {
+            mongoId = ObjectID(someProductId);
+        } catch (e) {
+            return Promise.reject();
+        }
+        return productCollection.deleteOne({_id: ObjectID(someProductId)});
     }
 
 };

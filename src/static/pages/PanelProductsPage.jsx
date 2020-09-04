@@ -94,7 +94,7 @@ export default class PanelProductsPage extends React.Component {
                         </div>
                         <div className="form-group">
                             <button type="button"
-                                    className="btn btn-primary font-weight-bold"
+                                    className="btn btn-success font-weight-bold"
                                     onClick={this.onSave.bind(this)}
                                     disabled={
                                         (this.state.newProduct.key == null || this.state.newProduct.key == '') || (this.state.newProduct.slug == null || this.state.newProduct.slug == '')

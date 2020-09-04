@@ -77,12 +77,18 @@ export default class PanelProductPage extends React.Component {
                         className="form-control"
                     />
                 </div>
-                <div className="form-group row">
+                <div className="btn-group">
                     <button type="button"
-                            className="btn btn-primary font-weight-bold"
+                            className="m-2 btn btn-success font-weight-bold"
                             onClick={this.onSave.bind(this)}
                     >
                         Сохранить
+                    </button>
+                    <button type="button"
+                            className="m-2 btn btn-danger font-weight-bold"
+                            onClick={this.onDelProduct.bind(this)}
+                    >
+                        Удалить
                     </button>
                 </div>
             </form>
@@ -147,7 +153,30 @@ export default class PanelProductPage extends React.Component {
                     return response.json()
                 }
             })
-            .then(json => this.setState({product: json, status: 'ready'}))
+            .then(json => {
+                this.setState({product: json, status: 'ready'});
+                window.location = "/panel/product";
+            })
+            .catch(() => this.setState({status: 'error'}));
+    }
+
+    onDelProduct() {
+        event.preventDefault();
+        console.log('delete');
+        fetch(`/api/product/${this.props.match.params.id}`, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (response.status == '401' || response.status == '403') {
+                    window.location = "/api/login";
+                } else {
+                    return response.json()
+                }
+            })
+            .then(json => {
+                this.setState({product: json, status: 'ready'});
+                window.location = "/panel/product";
+            })
             .catch(() => this.setState({status: 'error'}));
     }
 

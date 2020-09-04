@@ -63,6 +63,10 @@ app.post("/api/product", function (req, res) {
     DBService.saveProduct(req.body)
         .then(result => res.json(result))
 });
+app.delete("/api/product/:id", function (req, res) {
+    DBService.deleteProduct(req.params.id)
+        .then(result => res.json(result))
+});
 app.use(staticMiddleware);
 app.use(serveNotFound);
 
