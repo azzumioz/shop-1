@@ -20,95 +20,101 @@ export default class PanelProductPage extends React.Component {
 
     renderForm() {
         return (
-            <form>
-                <h4 className="text-center">Редактирование товара</h4>
-                <div className="form-group row">
-                    <label>Наименование</label>
-                    <input
-                        name="title"
-                        value={this.state.product.title}
-                        onChange={this.onChange.bind(this)}
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group row">
-                    <label>Описание</label>
-                    <textarea
-                        name="description"
-                        value={this.state.product.description}
-                        rows="3"
-                        onChange={this.onChange.bind(this)}
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group row">
-                    <label>Цена</label>
-                    <input
-                        name="price"
-                        value={this.state.product.price}
-                        onChange={this.onChange.bind(this)}
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group row">
-                    <label>Имя файла с изображением товара</label>
-                    <input
-                        name="img"
-                        value={this.state.product.img}
-                        onChange={this.onChange.bind(this)}
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group row">
-                    <label>Ключ</label>
-                    <input
-                        name="key"
-                        value={this.state.product.key}
-                        onChange={this.onChange.bind(this)}
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group row">
-                    <label>Слаг</label>
-                    <input
-                        name="slug"
-                        value={this.state.product.slug}
-                        onChange={this.onChange.bind(this)}
-                        className="form-control"
-                    />
-                </div>
-                <div className="btn-group">
-                    <button type="button"
-                            className="m-2 btn btn-success font-weight-bold"
-                            onClick={this.onSave.bind(this)}
-                    >
-                        Сохранить
-                    </button>
-                    <button type="button"
-                            className="m-2 btn btn-danger font-weight-bold"
-                            onClick={this.onDelProduct.bind(this)}
-                    >
-                        Удалить
-                    </button>
-                </div>
-            </form>
+            <div className="card mt-4">
+                <article className="card-body">
+                    <form>
+                        <h4 className="text-center">Редактирование товара</h4>
+                        <div className="form-group row">
+                            <label>Наименование</label>
+                            <input
+                                name="title"
+                                value={this.state.product.title}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group row">
+                            <label>Описание</label>
+                            <textarea
+                                name="description"
+                                value={this.state.product.description}
+                                rows="3"
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group row">
+                            <label>Цена</label>
+                            <input
+                                name="price"
+                                value={this.state.product.price}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group row">
+                            <label>Имя файла с изображением товара</label>
+                            <input
+                                name="img"
+                                value={this.state.product.img}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group row">
+                            <label>Ключ</label>
+                            <input
+                                name="key"
+                                value={this.state.product.key}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="form-group row">
+                            <label>Слаг</label>
+                            <input
+                                name="slug"
+                                value={this.state.product.slug}
+                                onChange={this.onChange.bind(this)}
+                                className="form-control"
+                            />
+                        </div>
+                        <div className="btn-group">
+                            <button type="button"
+                                    className="m-2 btn btn-success font-weight-bold"
+                                    onClick={this.onSave.bind(this)}
+                            >
+                                Сохранить
+                            </button>
+                            <button type="button"
+                                    className="m-2 btn btn-danger font-weight-bold"
+                                    onClick={this.onDelProduct.bind(this)}
+                            >
+                                Удалить
+                            </button>
+                        </div>
+                    </form>
+                </article>
+            </div>
         )
     }
 
     renderProduct() {
         return (
-            <React.Fragment>
-                <h3>{this.state.product.title}</h3>
-                <div className="row pt-4">
-                    <div className="col-3">
-                        <img src={`/${this.state.product.img}`}
-                             className="img-fluid"/>
-                    </div>
-                    <div className="col-9">
-                        {this.state.product.description}
-                    </div>
+                <div className="card">
+                    <article className="card-body">
+                        <h3>{this.state.product.title}</h3>
+                        <div className="row pt-4">
+                            <div className="col-3">
+                                <img src={`/${this.state.product.img}`}
+                                     className="img-fluid"/>
+                            </div>
+                            <div className="col-9">
+                                {this.state.product.description}
+                            </div>
+                        </div>
+                    </article>
                 </div>
-            </React.Fragment>
         )
     }
 
@@ -116,10 +122,12 @@ export default class PanelProductPage extends React.Component {
         return (
             <div className="d-flex flex-column h-100">
                 <Header classColor="row bg-dark"/>
-                {this.renderStatus()}
-                <main className=" container-fluid d-flex">
+                <main className=" container-fluid">
                     <div className="row">
-                        <div className="content p-4 bg-white col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
+                        <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
+                            <div className="pb-4">
+                                {this.renderStatus()}
+                            </div>
                             {this.state.status === 'ready' && this.renderProduct()}
                             {this.state.status === 'ready' && this.renderForm()}
                         </div>

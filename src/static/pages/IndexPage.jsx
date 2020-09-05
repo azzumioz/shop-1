@@ -35,7 +35,7 @@ export default class IndexPage extends React.Component {
         return (
             <div className="d-flex flex-column h-100">
                 <Header/>
-                <main className=" container-fluid d-flex">
+                <main className=" container-fluid">
                     <div className="row">
                         <div className="content p-4 col-md-8 offset-md-2 col-sm-10 offset-sm-1 ">
                             {this.renderStatus()}
