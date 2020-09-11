@@ -5,6 +5,7 @@ import Footer from "../component/Footer.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 import PanelInfo from "../component/PanelInfo.jsx";
 
+const slug = require('slug');
 let encodedData = '';
 let fileType = '';
 
@@ -74,15 +75,6 @@ export default class PanelProductPage extends React.Component {
                             <input
                                 name="key"
                                 value={this.state.product.key}
-                                onChange={this.onChange.bind(this)}
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="form-group row">
-                            <label>Слаг</label>
-                            <input
-                                name="slug"
-                                value={this.state.product.slug}
                                 onChange={this.onChange.bind(this)}
                                 className="form-control"
                             />
@@ -185,6 +177,7 @@ export default class PanelProductPage extends React.Component {
 
     onSave() {
         event.preventDefault();
+        this.state.product.slug = slug(this.state.product.title);
         if (encodedData !== '') {
             this.state.product["file"] = encodedData;
             this.state.product["fileType"] = fileType;

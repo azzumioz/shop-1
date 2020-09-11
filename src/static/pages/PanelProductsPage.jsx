@@ -5,6 +5,7 @@ import PanelProductBox from "../component/PanelProductBox.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 import PanelInfo from "../component/PanelInfo.jsx";
 
+const slug = require('slug');
 let encodedData = '';
 
 export default class PanelProductsPage extends React.Component {
@@ -90,21 +91,11 @@ export default class PanelProductsPage extends React.Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Слаг</label>
-                            <input
-                                name="slug"
-                                value={this.state.newProduct.slug}
-                                onChange={this.onChange.bind(this)}
-                                className="form-control"
-                                placeholder="Обязательно к заполнению"
-                            />
-                        </div>
-                        <div className="form-group">
                             <button type="button"
                                     className="btn btn-success font-weight-bold"
                                     onClick={this.onSave.bind(this)}
                                     disabled={
-                                        (this.state.newProduct.key == null || this.state.newProduct.key == '') || (this.state.newProduct.slug == null || this.state.newProduct.slug == '')
+                                        (this.state.newProduct.key == null || this.state.newProduct.key == '') || (this.state.newProduct.title == null || this.state.newProduct.title == '')
                                     }
                             >
                                 Сохранить
@@ -172,6 +163,7 @@ export default class PanelProductsPage extends React.Component {
 
     onSave() {
         event.preventDefault();
+        this.state.newProduct.slug = slug(this.state.newProduct.title);
         if (encodedData !== '') {
             this.state.newProduct["file"] = encodedData;
         }
