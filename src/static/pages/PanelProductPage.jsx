@@ -3,6 +3,7 @@ import React from "react";
 import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
+import PanelInfo from "../component/PanelInfo.jsx";
 
 let encodedData = '';
 let fileType = '';
@@ -14,7 +15,7 @@ export default class PanelProductPage extends React.Component {
         this.state = {
             product: [],
             status: 'idle',
-            statusFile: false
+            isNotImageFile: false
         }
     }
 
@@ -58,6 +59,8 @@ export default class PanelProductPage extends React.Component {
                         </div>
                         <div className="form-group row">
                             <label>Имя файла с изображением товара</label>
+                            {this.state.isNotImageFile &&
+                            <PanelInfo typeAlert="alert-danger" textAlert="Выберите файл c изображением"/>}
                             <input
                                 name="img"
                                 type="file"
@@ -107,6 +110,14 @@ export default class PanelProductPage extends React.Component {
     onImageChange(e) {
         e.preventDefault();
         let file = e.target.files[0];
+        if (!file.type.includes('image/')) {
+            this.state.isNotImageFile = true;
+            this.forceUpdate();
+            return;
+        }
+        this.state.isNotImageFile = false;
+        this.forceUpdate();
+
         let reader = new FileReader();
         reader.onload = function (event) {
             encodedData = window.btoa(event.target.result);

@@ -28,7 +28,7 @@ const payload = {
     email: userEmail
 };
 const token = jwt.sign(payload, SECRET, {
-    expiresIn: "5m"
+    expiresIn: "30m"
 });
 DBService.init();
 

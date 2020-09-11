@@ -3,6 +3,7 @@ import Footer from "../component/Footer.jsx";
 import Header from "../component/Header.jsx";
 import PanelProductBox from "../component/PanelProductBox.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
+import PanelInfo from "../component/PanelInfo.jsx";
 
 let encodedData = '';
 
@@ -14,6 +15,7 @@ export default class PanelProductsPage extends React.Component {
             products: [],
             status: 'idle',
             newProduct: {},
+            isNotImageFile: false
         }
     }
 
@@ -66,11 +68,13 @@ export default class PanelProductsPage extends React.Component {
                         </div>
                         <div className="form-group">
                             <label>Имя файла с изображением товара</label>
+                            {this.state.isNotImageFile &&
+                            <PanelInfo typeAlert="alert-danger" textAlert="Выберите файл c изображением"/>}
                             <input
                                 name="img"
                                 type="file"
                                 value={this.state.newProduct.img}
-                                onChange={(e)=>this.onImageChange(e)}
+                                onChange={(e) => this.onImageChange(e)}
                                 className="form-control"
                             />
                         </div>
@@ -149,11 +153,18 @@ export default class PanelProductsPage extends React.Component {
     onImageChange(e) {
         e.preventDefault();
         let file = e.target.files[0];
+        if (!file.type.includes('image/')) {
+            this.state.isNotImageFile = true;
+            this.forceUpdate();
+            return;
+        }
+        this.state.isNotImageFile = false;
+        this.forceUpdate();
         let reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             encodedData = window.btoa(event.target.result);
         };
-        reader.onerror = function(event) {
+        reader.onerror = function (event) {
             console.error(`Файл ${file.name} не может быть прочитан! ${event.target.error.code}`);
         };
         reader.readAsBinaryString(file);
