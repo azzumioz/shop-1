@@ -6,9 +6,9 @@ export default class ProductBox extends React.Component {
         const product = this.props.product;
 
         return (
-            <div className="card" key={product._id}>
+            <div className="card">
                 <Link to={`/product/${product.key}-${product.slug}`}>
-                    <img className="card-img-top" src={`${product.img}`}/>
+                    <img className="card-img-top" src={`data: ${product.fileType} ;base64, ${product.file}`}/>
                 </Link>
                 <div className="card-body">
                     <h5 className="card-title">{product.title}</h5>

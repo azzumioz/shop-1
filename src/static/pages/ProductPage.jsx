@@ -40,7 +40,7 @@ export default class ProductPage extends React.Component {
                 </ul>
                 <div className="row pt-4">
                     <div className="col-3">
-                        <img src={`/${this.state.product.img}`}
+                        <img src={`data: ${this.state.product.fileType} ;base64, ${this.state.product.file}`}
                              className="img-fluid"/>
                     </div>
                     <div className="col-9">

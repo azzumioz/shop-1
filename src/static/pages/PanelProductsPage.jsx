@@ -4,6 +4,8 @@ import Header from "../component/Header.jsx";
 import PanelProductBox from "../component/PanelProductBox.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 
+let encodedData = '';
+
 export default class PanelProductsPage extends React.Component {
 
     constructor(props) {
@@ -66,8 +68,9 @@ export default class PanelProductsPage extends React.Component {
                             <label>Имя файла с изображением товара</label>
                             <input
                                 name="img"
+                                type="file"
                                 value={this.state.newProduct.img}
-                                onChange={this.onChange.bind(this)}
+                                onChange={(e)=>this.onImageChange(e)}
                                 className="form-control"
                             />
                         </div>
@@ -143,8 +146,24 @@ export default class PanelProductsPage extends React.Component {
         this.forceUpdate();
     }
 
+    onImageChange(e) {
+        e.preventDefault();
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = function(event) {
+            encodedData = window.btoa(event.target.result);
+        };
+        reader.onerror = function(event) {
+            console.error(`Файл ${file.name} не может быть прочитан! ${event.target.error.code}`);
+        };
+        reader.readAsBinaryString(file);
+    }
+
     onSave() {
         event.preventDefault();
+        if (encodedData !== '') {
+            this.state.newProduct["file"] = encodedData;
+        }
         fetch(`/api/product`, {
             method: "POST",
             body: JSON.stringify(this.state.newProduct),
@@ -169,7 +188,8 @@ export default class PanelProductsPage extends React.Component {
                         price: '',
                         img: '',
                         key: '',
-                        slug: ''
+                        slug: '',
+                        file: ''
                     }
                 });
                 this.forceUpdate();

@@ -5,7 +5,9 @@ export default class PanelInfo extends React.Component {
     render() {
         return (
             <div className={this.props.typeAlert} role="alert">
-                {this.props.textAlert}
+                <div className="pl-2">
+                    {this.props.textAlert}
+                </div>
             </div>
         );
     }

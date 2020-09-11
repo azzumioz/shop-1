@@ -4,13 +4,17 @@ import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 
+let encodedData = '';
+let fileType = '';
+
 export default class PanelProductPage extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             product: [],
-            status: 'idle'
+            status: 'idle',
+            statusFile: false
         }
     }
 
@@ -56,8 +60,9 @@ export default class PanelProductPage extends React.Component {
                             <label>Имя файла с изображением товара</label>
                             <input
                                 name="img"
+                                type="file"
                                 value={this.state.product.img}
-                                onChange={this.onChange.bind(this)}
+                                onChange={(e) => this.onImageChange(e)}
                                 className="form-control"
                             />
                         </div>
@@ -99,23 +104,46 @@ export default class PanelProductPage extends React.Component {
         )
     }
 
+    onImageChange(e) {
+        e.preventDefault();
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = function (event) {
+            encodedData = window.btoa(event.target.result);
+            fileType = file.type;
+        };
+        reader.onerror = function (event) {
+            console.error(`Файл ${file.name} не может быть прочитан! ${event.target.error.code}`);
+        };
+        reader.readAsBinaryString(file);
+
+
+        let fileReader = new FileReader();
+        fileReader.onload = function (progressEvent) {
+            let imgProduct = document.getElementById("imgProduct");
+            imgProduct.src = fileReader.result;
+        };
+        fileReader.readAsDataURL(file);
+
+    }
+
     renderProduct() {
         return (
-                <div className="card">
-                    <article className="card-body">
-                        <h3>{this.state.product.title}</h3>
-                        <div className="row pt-4">
-                            <div className="col-3">
-                                <img src={`/${this.state.product.img}`}
-                                     className="img-fluid"/>
-                            </div>
-                            <div className="col-9">
-                                {this.state.product.description}
-                            </div>
+            <div className="card">
+                <article className="card-body">
+                    <h3>{this.state.product.title}</h3>
+                    <div className="row pt-4">
+                        <div className="col-3">
+                            <img src={`data: ${this.state.product.fileType} ;base64, ${this.state.product.file}`}
+                                 className="img-fluid" id="imgProduct"/>
                         </div>
-                    </article>
-                </div>
-        )
+                        <div className="col-9">
+                            {this.state.product.description}
+                        </div>
+                    </div>
+                </article>
+            </div>
+        );
     }
 
     render() {
@@ -139,7 +167,6 @@ export default class PanelProductPage extends React.Component {
     }
 
     onChange(event) {
-        console.log('onChange');
         const name = event.target.name;
         this.state.product[name] = event.target.value;
         this.forceUpdate();
@@ -147,6 +174,10 @@ export default class PanelProductPage extends React.Component {
 
     onSave() {
         event.preventDefault();
+        if (encodedData !== '') {
+            this.state.product["file"] = encodedData;
+            this.state.product["fileType"] = fileType;
+        }
         fetch(`/api/product/${this.props.match.params.id}`, {
             method: "PUT",
             body: JSON.stringify(this.state.product),
@@ -196,7 +227,7 @@ export default class PanelProductPage extends React.Component {
                 if (response.status == '401' || response.status == '403') {
                     window.location = "/api/login";
                 } else {
-                    return response.json()
+                    return response.json();
                 }
             })
             .then(json => this.setState({product: json, status: 'ready'}))

@@ -19,9 +19,9 @@ export default class IndexPage extends React.Component {
             return false;
         }
         return (
-            this.state.products.map(function (product) {
+            this.state.products.map(function (product,i) {
                 return (
-                    <ProductBox product={product}/>
+                    <ProductBox product={product} key = {i}/>
                 );
             })
         )

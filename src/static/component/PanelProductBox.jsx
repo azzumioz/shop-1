@@ -8,7 +8,7 @@ export default class PanelProductBox extends React.Component {
         return (
                 <div className="card" key={product.key}>
                     <Link to={`/panel/product/${product._id}`}>
-                        <img className="card-img-top" src={`/${product.img}`}/>
+                        <img className="card-img-top" src={`data: ${product.fileType} ;base64, ${product.file}`}/>
                     </Link>
                     <div className="card-body">
                         <h5 className="card-title">{product.title}</h5>
