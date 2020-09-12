@@ -5,11 +5,18 @@ import Navigation from "../component/Navigation.jsx";
 import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
+import NavMenuBread from "../component/NavMenuBread.jsx";
 
 const tabsMenu = [
     {name: "Описание", link: "#"},
     {name: "Характеристики", link: "#"},
     {name: "Отзывы", link: "#"}
+];
+
+const breadMenu = [
+    {name: "Каталог", link: "#"},
+    {name: "Вентиляция", link: "#"},
+    {name: "ПВУ", link: "#"}
 ];
 
 export default class ProductPage extends React.Component {
@@ -29,15 +36,9 @@ export default class ProductPage extends React.Component {
     renderProduct() {
         return (
             <React.Fragment>
-                <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="/">Каталог</a></li>
-                    <li className="breadcrumb-item"><a href="#">Вентиляция</a></li>
-                    <li className="breadcrumb-item"><a href="#">ПВУ</a></li>
-                </ol>
+                <NavMenuBread tabs={breadMenu}/>
                 <h3>{this.state.product.title}</h3>
-                <ul className="nav nav-tabs">
-                    <Navigation tabs={tabsMenu} clName="nav nav-tabs"/>
-                </ul>
+                <Navigation tabs={tabsMenu} clName="nav nav-tabs"/>
                 <div className="row pt-4">
                     <div className="col-3">
                         <img src={`data: ${this.state.product.fileType} ;base64, ${this.state.product.file}`}
@@ -47,8 +48,7 @@ export default class ProductPage extends React.Component {
                         <p>{this.state.product.description}</p>
                         <p>{this.state.product.price} руб.</p>
                         <hr/>
-                        <button type="button" className="btn btn-primary font-weight-bold">Заказать
-                        </button>
+                        <button type="button" className="btn btn-primary font-weight-bold">Заказать</button>
                     </div>
                 </div>
             </React.Fragment>
