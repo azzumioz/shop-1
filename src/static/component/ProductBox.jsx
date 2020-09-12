@@ -15,7 +15,7 @@ export default class ProductBox extends React.Component {
                     <p className="card-text">{product.description}</p>
                     <p>Цена: <b>{product.price} руб.</b></p>
                     <Link to={this.props.linkProduct}>
-                        <a href="#" className="btn btn-primary font-weight-bold">{this.props.textButton}</a>
+                        <div className="btn btn-primary font-weight-bold">{this.props.textButton}</div>
                     </Link>
                 </div>
             </div>

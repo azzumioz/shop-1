@@ -30,6 +30,7 @@ export default class PanelProductsPage extends React.Component {
                     <ProductBox product={product}
                                 linkProduct={`/panel/product/${product._id}`}
                                 textButton='Перейти к товару'
+                                key = {product._id}
                     />
                 );
             })
