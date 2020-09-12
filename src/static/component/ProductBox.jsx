@@ -7,15 +7,15 @@ export default class ProductBox extends React.Component {
 
         return (
             <div className="card">
-                <Link to={`/product/${product.key}-${product.slug}`}>
+                <Link to={this.props.linkProduct}>
                     <img className="card-img-top" src={`data: ${product.fileType} ;base64, ${product.file}`}/>
                 </Link>
                 <div className="card-body">
                     <h5 className="card-title">{product.title}</h5>
                     <p className="card-text">{product.description}</p>
                     <p>Цена: <b>{product.price} руб.</b></p>
-                    <Link to={`/product/${product.key}-${product.slug}`}>
-                        <a href="#" className="btn btn-primary font-weight-bold">Заказать</a>
+                    <Link to={this.props.linkProduct}>
+                        <a href="#" className="btn btn-primary font-weight-bold">{this.props.textButton}</a>
                     </Link>
                 </div>
             </div>

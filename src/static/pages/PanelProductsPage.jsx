@@ -1,7 +1,7 @@
 import React from "react";
 import Footer from "../component/Footer.jsx";
 import Header from "../component/Header.jsx";
-import PanelProductBox from "../component/PanelProductBox.jsx";
+import ProductBox from "../component/ProductBox.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 import PanelInfo from "../component/PanelInfo.jsx";
 
@@ -27,7 +27,10 @@ export default class PanelProductsPage extends React.Component {
         return (
             this.state.products.map(function (product) {
                 return (
-                    <PanelProductBox product={product}/>
+                    <ProductBox product={product}
+                                linkProduct={`/panel/product/${product._id}`}
+                                textButton='Перейти к товару'
+                    />
                 );
             })
         )

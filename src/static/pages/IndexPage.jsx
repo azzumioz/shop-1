@@ -19,9 +19,12 @@ export default class IndexPage extends React.Component {
             return false;
         }
         return (
-            this.state.products.map(function (product,i) {
+            this.state.products.map(function (product) {
                 return (
-                    <ProductBox product={product} key = {i}/>
+                    <ProductBox product={product}
+                                linkProduct={`/product/${product.key}-${product.slug}`}
+                                textButton='Заказать'
+                    />
                 );
             })
         )
