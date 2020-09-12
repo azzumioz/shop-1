@@ -24,6 +24,7 @@ export default class IndexPage extends React.Component {
                     <ProductBox product={product}
                                 linkProduct={`/product/${product.key}-${product.slug}`}
                                 textButton='Заказать'
+                                key = {product._id}
                     />
                 );
             })
