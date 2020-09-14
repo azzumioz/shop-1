@@ -1,5 +1,5 @@
 const {
-    fs, typeHtml, statusOk, statusNotFound, textNotFound, mainHtml, publicDirName, templateNotFound
+    fs, ejs, typeHtml, statusOk, statusNotFound, textNotFound, mainHtml, publicDirName, templateNotFound
 } = require('../constant');
 
 
@@ -25,4 +25,5 @@ function serveNotFound(req, res) {
 
 module.exports = {
     serveSPA,
+    serveNotFound
 };
