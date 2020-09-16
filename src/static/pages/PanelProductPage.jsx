@@ -205,22 +205,24 @@ export default class PanelProductPage extends React.Component {
 
     onDelProduct() {
         event.preventDefault();
-        console.log('delete');
-        fetch(`/api/product/${this.props.match.params.id}`, {
-            method: "DELETE"
-        })
-            .then(response => {
-                if (response.status == '401' || response.status == '403') {
-                    window.location = "/api/login";
-                } else {
-                    return response.json()
-                }
+        const result = window.confirm('Удалить?');
+        if (result) {
+            fetch(`/api/product/${this.props.match.params.id}`, {
+                method: "DELETE"
             })
-            .then(json => {
-                this.setState({product: json, status: 'ready'});
-                window.location = "/panel/product";
-            })
-            .catch(() => this.setState({status: 'error'}));
+                .then(response => {
+                    if (response.status == '401' || response.status == '403') {
+                        window.location = "/api/login";
+                    } else {
+                        return response.json()
+                    }
+                })
+                .then(json => {
+                    this.setState({product: json, status: 'ready'});
+                    window.location = "/panel/product";
+                })
+                .catch(() => this.setState({status: 'error'}));
+        }
     }
 
     componentDidMount() {
