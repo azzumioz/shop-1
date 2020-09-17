@@ -3,9 +3,9 @@ import Navigation from "./Navigation.jsx";
 
 const tabsMenu = [
     {name: "Каталог", link: "/"},
-    {name: "Доставка", link: "#"},
-    {name: "Гарантии", link: "#"},
-    {name: "Контакты", link: "#"},
+    {name: "Доставка", link: "/delivery"},
+    {name: "Гарантии", link: "/guarantee"},
+    {name: "Контакты", link: "/contacts"},
     {name: "Панель управления", link: "/panel"}
 ];
 
