@@ -4,6 +4,7 @@ import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 import PanelInfo from "../component/PanelInfo.jsx";
+import Portal from "../component/Portal.jsx";
 
 const slug = require('slug');
 let encodedData = '';
@@ -16,12 +17,51 @@ export default class PanelProductPage extends React.Component {
         this.state = {
             product: [],
             status: 'idle',
-            isNotImageFile: false
+            isNotImageFile: false,
+            isModalOpen: false
         }
     }
 
     renderStatus() {
         return <PanelInfoProduct status={this.state.status}/>
+    }
+
+    openModal() {
+        this.setState({isModalOpen: true});
+    };
+
+    renderModal() {
+        return (
+            <Portal>
+                <div className="modalOverlay">
+                    <div className="modalWindow">
+                        <div className="modalHeader">
+                            <div className="modalTitle">Подтвердите удаление товара</div>
+                        </div>
+                        <div className="modalBody">
+                            Наименование: {this.state.product.title}
+                        </div>
+                        <div className="modalFooter">
+                            <button onClick={this.onButtonCancel.bind(this)}
+                                    className="m-2 btn btn-success font-weight-bold">Отмена
+                            </button>
+                            <button onClick={this.onButtonConfirm.bind(this)}
+                                    className="m-2 btn btn-danger font-weight-bold">Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </Portal>
+        )
+    }
+
+    onButtonCancel() {
+        this.setState({isModalOpen: false});
+    }
+
+    onButtonConfirm() {
+        this.setState({isModalOpen: false});
+        this.onDelProduct();
     }
 
     renderForm() {
@@ -88,12 +128,13 @@ export default class PanelProductPage extends React.Component {
                             </button>
                             <button type="button"
                                     className="m-2 btn btn-danger font-weight-bold"
-                                    onClick={this.onDelProduct.bind(this)}
+                                    onClick={this.openModal.bind(this)}
                             >
                                 Удалить
                             </button>
                         </div>
                     </form>
+                    {this.state.isModalOpen && this.renderModal()}
                 </article>
             </div>
         )
@@ -205,24 +246,21 @@ export default class PanelProductPage extends React.Component {
 
     onDelProduct() {
         event.preventDefault();
-        const result = window.confirm('Удалить?');
-        if (result) {
-            fetch(`/api/product/${this.props.match.params.id}`, {
-                method: "DELETE"
+        fetch(`/api/product/${this.props.match.params.id}`, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (response.status == '401' || response.status == '403') {
+                    window.location = "/api/login";
+                } else {
+                    return response.json()
+                }
             })
-                .then(response => {
-                    if (response.status == '401' || response.status == '403') {
-                        window.location = "/api/login";
-                    } else {
-                        return response.json()
-                    }
-                })
-                .then(json => {
-                    this.setState({product: json, status: 'ready'});
-                    window.location = "/panel/product";
-                })
-                .catch(() => this.setState({status: 'error'}));
-        }
+            .then(json => {
+                this.setState({product: json, status: 'ready'});
+                window.location = "/panel/product";
+            })
+            .catch(() => this.setState({status: 'error'}));
     }
 
     componentDidMount() {
