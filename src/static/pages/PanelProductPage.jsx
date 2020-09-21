@@ -4,7 +4,7 @@ import Header from "../component/Header.jsx";
 import Footer from "../component/Footer.jsx";
 import PanelInfoProduct from "../component/PanelInfoProduct.jsx";
 import PanelInfo from "../component/PanelInfo.jsx";
-import Portal from "../component/Portal.jsx";
+import ModalWindow from "../component/ModalWindow.jsx";
 
 const slug = require('slug');
 let encodedData = '';
@@ -14,6 +14,8 @@ export default class PanelProductPage extends React.Component {
 
     constructor(props) {
         super(props);
+        this.onButtonCancel = this.onButtonCancel.bind(this);
+        this.onButtonConfirm = this.onButtonConfirm.bind(this);
         this.state = {
             product: [],
             status: 'idle',
@@ -30,36 +32,13 @@ export default class PanelProductPage extends React.Component {
         this.setState({isModalOpen: true});
     };
 
-    renderModal() {
-        return (
-            <Portal>
-                <div className="modalOverlay">
-                    <div className="modalWindow">
-                        <div className="modalHeader">
-                            <div className="modalTitle">Подтвердите удаление товара</div>
-                        </div>
-                        <div className="modalBody">
-                            Наименование: {this.state.product.title}
-                        </div>
-                        <div className="modalFooter">
-                            <button onClick={this.onButtonCancel.bind(this)}
-                                    className="m-2 btn btn-success font-weight-bold">Отмена
-                            </button>
-                            <button onClick={this.onButtonConfirm.bind(this)}
-                                    className="m-2 btn btn-danger font-weight-bold">Удалить
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </Portal>
-        )
-    }
-
     onButtonCancel() {
+        console.log("Cancel");
         this.setState({isModalOpen: false});
     }
 
     onButtonConfirm() {
+        console.log("Confirm");
         this.setState({isModalOpen: false});
         this.onDelProduct();
     }
@@ -134,7 +113,12 @@ export default class PanelProductPage extends React.Component {
                             </button>
                         </div>
                     </form>
-                    {this.state.isModalOpen && this.renderModal()}
+                    {this.state.isModalOpen &&
+                    <ModalWindow
+                        title={this.state.product.title}
+                        onButtonCancel={this.onButtonCancel}
+                        onButtonConfirm={this.onButtonConfirm}
+                    />}
                 </article>
             </div>
         )
